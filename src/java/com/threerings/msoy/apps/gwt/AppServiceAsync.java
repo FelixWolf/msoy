@@ -20,6 +20,11 @@ import com.threerings.msoy.facebook.gwt.KontagentInfo;
 public interface AppServiceAsync
 {
     /**
+     * The async version of {@link AppService#updateTemplates}.
+     */
+    void updateTemplates (int appId, Set<FacebookTemplate> changed, Set<FacebookTemplate.Key> removed, Map<FacebookTemplate.Key, Boolean> abled, AsyncCallback<Void> callback);
+
+    /**
      * The async version of {@link AppService#getApps}.
      */
     void getApps (AsyncCallback<List<AppInfo>> callback);
@@ -53,12 +58,7 @@ public interface AppServiceAsync
      * The async version of {@link AppService#loadTemplates}.
      */
     void loadTemplates (int appId, AsyncCallback<List<FacebookTemplate>> callback);
-
-    /**
-     * The async version of {@link AppService#updateTemplates}.
-     */
-    void updateTemplates (int appId, Set<FacebookTemplate> changed, Set<FacebookTemplate.Key> removed, Map<FacebookTemplate.Key, Boolean> abled, AsyncCallback<Void> callback);
-
+    
     /**
      * The async version of {@link AppService#loadThumbnails}.
      */

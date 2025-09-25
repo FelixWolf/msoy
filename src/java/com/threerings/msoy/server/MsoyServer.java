@@ -135,15 +135,6 @@ public class MsoyServer extends MsoyBaseServer
             bind(AuthenticationDomain.class).to(OOOAuthenticationDomain.class);
             // Messaging dependencies
             bind(MessageConnection.class).toInstance(createAMQPConnection());
-            // cron logic dependencies
-            bind(CronLogic.class).to(MsoyCronLogic.class);
-        }
-    }
-
-    @Singleton
-    public static class MsoyCronLogic extends CronLogic {
-        @Inject public MsoyCronLogic (Lifecycle cycle, @BatchInvoker Invoker invoker) {
-            super(cycle, invoker);
         }
     }
 
