@@ -16,3 +16,4 @@ src/as/com/threerings/msoy/client/*.cache
 src/as/com/threerings/msoy/client/DeploymentConfig.as
 src/gwt/client/*/*Messages.java
 src/java/com/threerings/msoy/data/all/DeploymentConfig.java
+build.properties

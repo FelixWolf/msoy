@@ -1,0 +1,7 @@
+flexsdk.dir=/path/to/flex3
+maven.repo.remote=https://repo1.maven.org/maven2
+deployment=test
+dev_deployment=true
+msoy.user=msoy
+burl.user=msoy
+msoy.group=msoy
