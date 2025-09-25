@@ -85,6 +85,15 @@ public class ServerConfig
 
     /** The secret key used for S3 authentication. */
     public static String mediaS3Key;
+    
+    /** The host for the S3 server. */
+    public static String mediaS3Host;
+    
+    /** The port for the S3 server. */
+    public static int mediaS3Port;
+    
+    /** If we use HTTPS. */
+    public static boolean mediaS3Secure;
 
     /** The name of our distribution, if any, in the Cloudfront CDN. */
     public static String cloudDistribution;
@@ -377,6 +386,9 @@ public class ServerConfig
         mediaS3Bucket = config.getValue("media_s3bucket", "msoy");
         mediaS3Id = config.getValue("media_s3id", "id");
         mediaS3Key = config.getValue("media_s3key", "key");
+        mediaS3Host = config.getValue("media_s3host", "s3-us-west-2.amazonaws.com");
+        mediaS3Port = config.getValue("media_s3port", 80);
+        mediaS3Secure = config.getValue("media_s3secure", false);
         cloudDistribution = config.getValue("cloud_distribution", "");
         cloudId = config.getValue("cloud_id", "id");
         cloudKey = config.getValue("cloud_key", "key");

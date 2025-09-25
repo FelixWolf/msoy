@@ -102,6 +102,8 @@ import com.threerings.msoy.web.gwt.WebCreds;
 import com.threerings.msoy.web.server.InvalidationAPI;
 import com.threerings.msoy.web.server.MsoyServiceServlet;
 
+import org.apache.commons.httpclient.HostConfiguration;
+
 import static com.threerings.msoy.Log.log;
 
 /**
@@ -499,7 +501,9 @@ public class AdminServlet extends MsoyServiceServlet
 
         try {
             // delete the media from S3
-            S3Connection s3Conn = new S3Connection(ServerConfig.mediaS3Id, ServerConfig.mediaS3Key);
+            HostConfiguration host = new HostConfiguration();
+            host.setHost(ServerConfig.mediaS3Host, ServerConfig.mediaS3Port, ServerConfig.mediaS3Secure?"https":"http");
+            S3Connection s3Conn = new S3Connection(ServerConfig.mediaS3Id, ServerConfig.mediaS3Key, host);
             s3Conn.deleteObject(ServerConfig.mediaS3Bucket, fileName);
 
             // invalidate it in the cloud

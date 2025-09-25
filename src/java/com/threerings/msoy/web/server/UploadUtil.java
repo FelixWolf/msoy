@@ -368,7 +368,7 @@ public class UploadUtil
     {
         try {
             HostConfiguration host = new HostConfiguration();
-            host.setHost("s3-us-west-2.amazonaws.com", 80, "http");
+            host.setHost(ServerConfig.mediaS3Host, ServerConfig.mediaS3Port, ServerConfig.mediaS3Secure?"https":"http");
             S3Connection conn = new S3Connection(ServerConfig.mediaS3Id, ServerConfig.mediaS3Key, host);
             S3FileObject uploadTarget = new S3FileObject(name, file, new MediaType(mimeType));
 
