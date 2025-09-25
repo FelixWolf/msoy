@@ -30,9 +30,9 @@
     </dependency>
 
     <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>9.1-901.jdbc4</version>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.3</version>
     </dependency>
 
     <dependency>
@@ -119,43 +119,11 @@
       <version>2.0</version>
     </dependency>
 
-    <!-- the threerings library was split into a bunch of smaller libraries; most of which
-         have been open sourced -->
-    <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>ooo-user</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>ooo-cron</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>ooo-facebook</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>ooo-messaging</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.1</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <!-- we no longer use the threerings library as the source is not available -->
-    <!--
     <dependency>
       <groupId>com.threerings</groupId>
       <artifactId>threerings</artifactId>
       <version>1.1</version>
     </dependency>
-    -->
 
     <dependency>
       <groupId>com.threerings</groupId>
@@ -173,12 +141,6 @@
       <groupId>com.threerings</groupId>
       <artifactId>underwire</artifactId>
       <version>1.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.threerings</groupId>
-          <artifactId>threerings</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
 <!-- jabber integration disabled
