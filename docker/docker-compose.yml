@@ -1,0 +1,86 @@
+services:
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: msoy
+      POSTGRES_USER: msoy
+      POSTGRES_PASSWORD: msoy
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    expose:
+      - "5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  mail:
+    image: bytemark/smtp
+    ports:
+      - "2555:25"
+    environment:
+      RELAY_HOST: ""
+      RELAY_PORT: ""
+      RELAY_USER: ""
+      RELAY_PASSWORD: ""
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    expose:
+      - "9000"   # S3 API (internal only)
+      - "9001"   # Web Console (still local only)
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ROOT_USER: msoy
+      MINIO_ROOT_PASSWORD: msoymsoy
+    command: server /data --console-address ":9001"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 msoy msoymsoy;
+      mc mb -p local/media.monsterfucker.zone || true;
+      mc policy set public local/media.monsterfucker.zone;
+      echo 'MinIO bucket created.';
+      exit 0;
+      "
+
+  whirled:
+    hostname: ${DOCKER_HOSTNAME}
+    build: .
+    expose:
+      - "8080"
+    ports:
+      - "4010:4010"
+      - "47623:47623"
+      - "47624:47624"
+      - "47625:47625"
+    volumes:
+      - .:/app
+      - ./msoy-media:/export/msoy/pages/media/uploads
+    depends_on:
+      - db
+      - mail
+      - minio
+    command: ["/start.sh"]
+
+  nginx:
+    image: nginx:alpine
+    ports:
+        - "8880:80"
+    depends_on:
+        - minio
+        - whirled
+    volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        - /dev/null:/etc/nginx/conf.d/default.conf
+
+volumes:
+  db_data:
+  minio-data:
+  msoy-media:

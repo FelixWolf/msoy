@@ -1,0 +1,1 @@
+CREATE TEXT SEARCH CONFIGURATION "default" (COPY = english);

@@ -1,0 +1,54 @@
+events {}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    upstream whirled_backend {
+        server whirled:8080;
+    }
+
+    upstream minio_backend {
+        server minio:9000;
+    }
+
+    server {
+        listen 80;
+        server_name media.whirled.com www.whirled.com whirled.com;
+
+        location / {
+            proxy_pass http://whirled_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name media2.whirled.com;
+
+        location / {
+            proxy_pass http://minio_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Optional stricter method to allow PUT/POST from local only
+        location ~* ^(.*)$ {
+            limit_except GET HEAD {
+                allow 127.0.0.1;
+                allow 10.0.0.0/8;
+                allow 172.16.0.0/12;
+                allow 192.168.0.0/16;
+                deny all;
+            }
+            proxy_pass http://minio_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
