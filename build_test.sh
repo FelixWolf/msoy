@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-ant distcleanall
-ant -Dflexsdk.dir=/home/felix/source/other/msoy/flex3 -Dmaven.repo.remote=https://repo1.maven.org/maven2 -Ddeployment=test -Ddev_deployment=true -Dmsoy.user=msoy -Dburl.user=msoy -Dmsoy.group=msoy distall
+docker build --network=host --build-arg DEPLOYMENT=test --build-arg DEV_DEPLOYMENT=true -t msoy-test .
+docker create --name extract msoy-test
+docker cp extract:/packages ./packages
+docker rm extract
