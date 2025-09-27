@@ -21,6 +21,5 @@ docker/docker-staging/
 docker/msoy-media/
 docker/msoy-media-work/
 docker/nginx.conf
-projects/thane/
 log/
 flex3/
