@@ -21,10 +21,10 @@ RUN curl -L -o jetty-parent-17.pom https://repo1.maven.org/maven2/org/eclipse/je
 WORKDIR /msoy
 
 # Download and extract Flex SDK
-RUN wget http://fpdownload.adobe.com/pub/flex/sdk/builds/flex3/flex_sdk_3.3.0.4852A.zip && \
+RUN wget http://fpdownload.adobe.com/pub/flex/sdk/builds/flex3/flex_sdk_3.3.0.4852.zip && \
     mkdir -p /msoy/flex3 && \
-    unzip flex_sdk_3.3.0.4852A.zip -d /msoy/flex3 && \
-    rm flex_sdk_3.3.0.4852A.zip
+    unzip flex_sdk_3.3.0.4852.zip -d /msoy/flex3 && \
+    rm flex_sdk_3.3.0.4852.zip
 
 # Copy host repo into container
 COPY . /msoy
