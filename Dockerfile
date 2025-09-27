@@ -55,4 +55,4 @@ RUN ant distcleanall && \
 
 # ---- Output stage ----
 FROM debian:bullseye-slim
-COPY --from=builder /msoy/dist/packages/*.deb /packages/
+COPY --from=builder /msoy/dist/packages/*.dpkg /packages/
