@@ -44,8 +44,8 @@ services:
       /bin/sh -c "
       sleep 5;
       mc alias set local http://minio:9000 msoy msoymsoy;
-      mc mb -p local/media.monsterfucker.zone || true;
-      mc policy set public local/media.monsterfucker.zone;
+      mc mb -p local/media.whirled.social || true;
+      mc policy set public local/media.whirled.social;
       echo 'MinIO bucket created.';
       exit 0;
       "

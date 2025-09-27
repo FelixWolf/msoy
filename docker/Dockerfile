@@ -1,5 +1,6 @@
 FROM openjdk:8-jre-slim
 
+FROM openjdk:8-jdk as builder
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     postgresql-client \
@@ -10,12 +11,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy your built .dpkg packages into the container
-COPY docker-staging/*.dpkg /tmp/
+COPY ./packages/*.dpkg /tmp/
 
 # Install the packages
 RUN dpkg -i /tmp/msoy-server-code_*.dpkg && \
     dpkg -i /tmp/msoy-server_*.dpkg && \
     dpkg -i /tmp/burl-server_*.dpkg
+
+RUN rm /tmp/*.dpkg
 
 RUN useradd -m -s /bin/bash msoy
 RUN useradd -m -s /bin/bash burl
