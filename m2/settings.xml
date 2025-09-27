@@ -1,0 +1,14 @@
+<settings>
+  <mirrors>
+    <mirror>
+      <id>central</id>
+      <mirrorOf>central</mirrorOf>
+      <url>https://repo1.maven.org/maven2</url>
+    </mirror>
+    <mirror>
+      <id>ooo-public-redirect</id>
+      <mirrorOf>ooo-public</mirrorOf>
+      <url>https://raw.githubusercontent.com/threerings/maven-repo/master/repository</url>
+    </mirror>
+  </mirrors>
+</settings>
