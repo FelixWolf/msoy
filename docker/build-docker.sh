@@ -2,8 +2,8 @@
 set -e
 
 # Set source and destination directories
-SRC_DIR="../dist/packages"
-DST_DIR="docker-staging"
+SRC_DIR="../packages"
+DST_DIR="./docker-staging"
 
 # Clean staging directory
 mkdir -p "$DST_DIR"
@@ -21,4 +21,4 @@ for prefix in msoy-server msoy-server-code burl-server; do
     fi
 done
 
-DOCKER_HOSTNAME=msoy0 docker-compose build
+DOCKER_HOSTNAME=msoy0 docker-compose build --no-cache

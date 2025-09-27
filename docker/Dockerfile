@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy your built .dpkg packages into the container
-COPY ./packages/*.dpkg /tmp/
+COPY ./docker-staging/*.dpkg /tmp/
 
 # Install the packages
 RUN dpkg -i /tmp/msoy-server-code_*.dpkg && \
