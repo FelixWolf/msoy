@@ -40,8 +40,17 @@ public class BrowserTest
 
         String message;
         String agent = getUserAgent().toLowerCase();
+        
+        // Basilisk and PaleMoon is the only browser that supports flash these days
+        if(!(agent.contains("basilisk") || agent.contains("palemoon"))) {
+            message = _msgs.browserUnsupported();
+        
+        // Compatible browser, just no flash!
+        } else if (!hasFlash()) {
+            message = _msgs.browserNoFlash();
+        
         // old MSIE
-        if (agent.contains("msie 6.0")) {
+        } else if (agent.contains("msie 6.0")) {
             // facebook or not, this is a very old browser at this point
             message = _msgs.browserOldMsie();
 
@@ -86,13 +95,30 @@ public class BrowserTest
             messageBox.add(MsoyUI.createLabel(_msgs.browserTitle(), "Title"));
             messageBox.add(MsoyUI.createHTML(message, null));
 
-            ClickHandler getFF = new ClickHandler() {
+            ClickHandler getBasilisk = new ClickHandler() {
                 public void onClick (ClickEvent event) {
-                    Window.open("http://getfirefox.com", "_blank", "");
+                    Window.open("https://www.basilisk-browser.org", "_blank", "");
                 }
             };
-            messageBox.add(MsoyUI.createActionImage("/images/landing/get_firefox_button.png",
-                                                    _msgs.browserGetFirefox(), getFF));
+            messageBox.add(MsoyUI.createActionImage("/images/landing/get_basilisk_button.png",
+                                                    _msgs.browserGetBasilisk(), getBasilisk));
+            
+            ClickHandler getPaleMoon = new ClickHandler() {
+                public void onClick (ClickEvent event) {
+                    Window.open("https://www.palemoon.org", "_blank", "");
+                }
+            };
+            messageBox.add(MsoyUI.createActionImage("/images/landing/get_palemoon_button.png",
+                                                    _msgs.browserGetPaleMoon(), getPaleMoon));
+            
+            ClickHandler getFlash = new ClickHandler() {
+                public void onClick (ClickEvent event) {
+                    Window.open("https://github.com/LiEnby/FlashPatcher/releases/tag/v1.7", "_blank", "");
+                }
+            };
+            messageBox.add(MsoyUI.createActionImage("/images/landing/get_flash_button.png",
+                                                    _msgs.browserGetFlash(), getFlash));
+            
             messageBox.add(MsoyUI.createActionImage("/images/landing/continue_button.png",
                                                     _msgs.browserClose(), continueClicked));
         }
@@ -108,6 +134,24 @@ public class BrowserTest
      */
     private static native String getUserAgent () /*-{
         return navigator.userAgent;
+    }-*/;
+    
+    public static native boolean hasFlash() /*-{
+        var has = false;
+
+        if (navigator.plugins && navigator.plugins.length) {
+            var flash = navigator.plugins['Shockwave Flash'];
+            if (flash) {
+                has = true;
+            }
+        } else if ($wnd.ActiveXObject) {
+            try {
+                new $wnd.ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+                has = true;
+            } catch (e) {}
+        }
+
+        return has;
     }-*/;
 
     protected static final FrameMessages _msgs = GWT.create(FrameMessages.class);
