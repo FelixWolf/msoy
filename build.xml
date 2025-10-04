@@ -302,6 +302,13 @@
         <filter token="HTTP_PORT" value="${http_port}"/>
       </filterset>
     </copy>
+    <copy file="pages/crossdomain.xml.in" tofile="pages/media/crossdomain.xml" overwrite="true">
+      <filterset>
+        <filter token="SERVER_URL_HOST" value="${server_url_host}"/>
+        <filter token="MEDIA_URL_HOST" value="${media_url_host}"/>
+        <filter token="HTTP_PORT" value="${http_port}"/>
+      </filterset>
+    </copy>
 
     <!-- copy our HTML sanitizer configuration -->
     <copy file="${basedir}/etc/antisamy-config.xml" todir="${deploy.dir}"/>
@@ -967,7 +974,7 @@
   </target>
 
   <!-- builds top-level flash applications. -->
-  <target name="flashapps" depends="asprepare,mediastub,embedstub,mochistub,videoplayer,audioplayer,remixer,imageeditor,camerabutton,uploader,asclient"
+  <target name="flashapps" depends="asprepare,mediastub,embedstub,mochistub,videoplayer,audioplayer,remixer,imageeditor,camerabutton,uploader,asclient,whirledmap"
           description="Builds all Flash clients and applets.">
   </target>
 
