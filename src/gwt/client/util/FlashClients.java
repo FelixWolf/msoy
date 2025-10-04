@@ -258,10 +258,23 @@ public class FlashClients
                 client = $wnd.parent.document.getElementById(id);
             }
         } catch (e) {
-            // we may be running in an iframe on Facebook in which case touching parent will throw
-            // an exception, so we just catch that here and go on about our business
+            // might be in an iframe (e.g. Facebook), accessing parent throws → ignore
         }
-        return client;
+
+        if (client) {
+            // If it’s the Flash plugin object (check for a known method)
+            if (typeof client.PercentLoaded === "function") {
+                return client;
+            }
+
+            // Otherwise, try to find an <embed> inside it
+            var embeds = client.getElementsByTagName("embed");
+            if (embeds.length > 0) {
+                return embeds[0];
+            }
+        }
+
+        return null;
     }-*/;
 
     /**
