@@ -18,9 +18,7 @@ src/gwt/client/*/*Messages.java
 src/java/com/threerings/msoy/data/all/DeploymentConfig.java
 build.properties
 docker/docker-staging/
-docker/msoy-media/
-docker/msoy-media-work/
-docker/nginx.conf
+docker/data/
 log/
 flex3/
 packages/
