@@ -116,7 +116,7 @@ public class ThemeLogic
         throws ServiceException
     {
         return _moneyLogic.securePrice(mrec.memberId, THEME_PURCHASE_KEY,
-            Currency.COINS, getThemeCoinCost(mrec), false);
+            Currency.BARS, getThemeBarCost(mrec), false);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ThemeLogic
         };
 
         BuyResult<Theme> buyResult = _moneyLogic.buyTheme(mrec, THEME_PURCHASE_KEY, currency,
-            authedAmount, Currency.COINS, getThemeCoinCost(mrec), groupName.toString(), buyOperation);
+            authedAmount, Currency.BARS, getThemeBarCost(mrec), groupName.toString(), buyOperation);
         return buyResult.toPurchaseResult();
     }
 
@@ -219,9 +219,9 @@ public class ThemeLogic
     /**
      * Return the current cost of creating a Whirled for the given member.
      */
-    protected int getThemeCoinCost (MemberRecord mrec)
+    protected int getThemeBarCost (MemberRecord mrec)
     {
-        return _runtime.getCoinCost(CostsConfigObject.NEW_THEME_NONSUB);
+        return _runtime.getBarCost(CostsConfigObject.NEW_THEME_NONSUB);
 
     }
 
