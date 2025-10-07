@@ -133,6 +133,8 @@
 -->
       <dependency groupId="net.sf.advanced-gwt" artifactId="advanced-gwt" version="2.0.9"/>
       <dependency groupId="com.allen-sauer.gwt.dnd" artifactId="gwt-dnd" version="3.1.2"/>
+      
+      <dependency groupId="com.rabbitmq" artifactId="amqp-client" version="1.5.5"/>
 
       <dependency groupId="com.threerings" artifactId="narya" version="1.8"/>
       <dependency groupId="com.threerings" artifactId="narya-gwt" version="1.8"/>
