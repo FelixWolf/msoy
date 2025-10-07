@@ -60,10 +60,10 @@ public class CostsConfigObject extends ConfigObject
     public int newThemeNonsub = -150;
 
     /** The base cost of a paid broadcast. */
-    public int broadcastBase = 1000;
+    public int broadcastBase = -10;
 
     /** The increment for each recent broadcast. */
-    public int broadcastIncrement = 4000;
+    public int broadcastIncrement = -4;
 
     /** The cost to start a party. */
     public int startParty = 2000;
