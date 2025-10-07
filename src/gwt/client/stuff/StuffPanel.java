@@ -165,7 +165,11 @@ public class StuffPanel extends FlowPanel
             // TODO: we should have Buy but not Upload, punt!
             return false;
         }
-        return type.isUploadableType();
+        if (type == MsoyItemType.LAUNCHER) {
+            // TODO: we should have Buy but not Upload, punt!
+            return false;
+        }
+        return type.isShopType();
     }
 
     protected void createUploadInterface ()
