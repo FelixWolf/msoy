@@ -31,7 +31,6 @@ import com.samskivert.util.StringUtil;
 
 import com.samskivert.depot.CacheInvalidator.TraverseWithFilter;
 import com.samskivert.depot.CountRecord;
-import com.samskivert.depot.DataMigration;
 import com.samskivert.depot.DatabaseException;
 import com.samskivert.depot.DateFuncs;
 import com.samskivert.depot.DepotRepository;
@@ -231,19 +230,6 @@ public abstract class ItemRepository<T extends ItemRecord>
     public void init (MsoyItemType itemType)
     {
         _itemType = itemType;
-
-        registerMigration(new DataMigration("2013-03 Shop bars removal, type=" + itemType) {
-            @Override public void invoke ()
-                throws DatabaseException {
-                int coinsPerBar = 10000;
-                Where barListings = new Where(getCatalogColumn(CatalogRecord.CURRENCY), Currency.BARS);
-
-                updatePartial(getCatalogClass(), barListings, null,
-                    getCatalogColumn(CatalogRecord.CURRENCY), Currency.COINS,
-                    getCatalogColumn(CatalogRecord.COST),
-                        getCatalogColumn(CatalogRecord.COST).times(coinsPerBar));
-            }
-        });
     }
 
     /**
