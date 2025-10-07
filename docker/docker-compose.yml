@@ -1,6 +1,18 @@
 services:
-  db:
+  msoy-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: msoy-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: whirled
+      RABBITMQ_DEFAULT_PASS: whirledpass
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  msoy-db:
     image: postgres:17
+    container_name: msoy-db
     restart: always
     environment:
       POSTGRES_DB: msoy
@@ -13,9 +25,9 @@ services:
     volumes:
       - ./data/db_data:/var/lib/postgresql/data
 
-  mail:
+  msoy-mail:
     image: boky/postfix
-    container_name: postfix
+    container_name: msoy-mail
     environment:
       HOSTNAME: mail.whirled.social
       POSTFIX_mynetworks: 127.0.0.0/8,172.16.0.0/12
@@ -27,8 +39,9 @@ services:
       - ./data/dkim:/etc/opendkim/keys
     restart: unless-stopped
 
-  whirled:
+  msoy-whirled:
     hostname: ${DOCKER_HOSTNAME}
+    container_name: msoy-whirled
     build: .
     ports:
       - "9475:8080"
@@ -40,8 +53,9 @@ services:
     volumes:
       - ./data/msoy-media:/export/msoy/pages/media/
     depends_on:
-      - db
-      - mail
+      - msoy-rabbitmq
+      - msoy-db
+      - msoy-mail
     command: ["/start.sh"]
 
 volumes:
