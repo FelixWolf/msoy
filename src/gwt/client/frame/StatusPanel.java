@@ -205,6 +205,14 @@ public class StatusPanel extends SmartTable
             coinsFocus.addClickHandler(NaviUtil.onViewTransactions(ReportType.COINS));
             setWidget(0, idx++, coinsFocus);
 
+            FloatPanel bars = new FloatPanel("Bars");
+            bars.add(new Image(Currency.BARS.getSmallIcon()));
+            bars.add(_barsLabel = new Label("0"));
+            FocusPanel barsFocus = new FocusPanel(bars);
+            barsFocus.addClickHandler(NaviUtil.onViewTransactions(ReportType.BARS));
+            setWidget(0, idx++, barsFocus);
+            setWidget(0, idx++, Link.create(_cmsgs.statusBuyBars(), Pages.BILLING), 1, "BuyBars");
+
             FloatPanel level = new FloatPanel("Level");
             level.add(new Image("/images/header/symbol_level.png"));
             level.add(_levelLabel = new Label("0"));
@@ -220,7 +228,7 @@ public class StatusPanel extends SmartTable
         }
 
         public void setBars (int bars) {
-            // _barsLabel.setText(Currency.BARS.format(bars));
+            _barsLabel.setText(Currency.BARS.format(bars));
         }
 
         public void setLevel (int level) {
@@ -248,6 +256,7 @@ public class StatusPanel extends SmartTable
         }
 
         protected Label _coinsLabel;
+        protected Label _barsLabel;
         protected Label _levelLabel;
         protected PopupPanel _coinPopup;
         protected PopupPanel _levelPopup;
