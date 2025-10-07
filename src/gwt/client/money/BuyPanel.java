@@ -72,6 +72,7 @@ public abstract class BuyPanel<T> extends SmartTable
         _barPanel = new FlowPanel();
         _barPanel.add(_buyBars = new BuyButton(Currency.BARS));
         _barPanel.add(_barLabel = MsoyUI.createHTML("", "inline"));
+        _barPanel.add(_getBars = Link.create(_msgs.getBars(), Pages.BILLING));
         _barPanel.add(_switchToCoins = MsoyUI.createActionLabel(
                           _msgs.buyWithCoins(), "inline", switchCurrency));
         setWidget(0, 0, _barPanel, 2);
@@ -144,6 +145,7 @@ public abstract class BuyPanel<T> extends SmartTable
         _quote = quote;
 
         boolean barOnly = (quote.getCoins() < 0); //(quote.getListedCurrency() == Currency.BARS)
+        _getBars.setVisible(barOnly);
         _switchToCoins.setVisible(!barOnly);
 
         _buyBars.setAmount(quote.getBars());
@@ -216,7 +218,7 @@ public abstract class BuyPanel<T> extends SmartTable
             if (msg == null) {
                 super.reportFailure(cause);
             } else {
-                MsoyUI.info(msg);
+                MsoyUI.infoAction(msg, _msgs.getBars(), Link.createHandler(Pages.BILLING));
             }
         }
 
@@ -258,6 +260,7 @@ public abstract class BuyPanel<T> extends SmartTable
 
     protected FlowPanel _barPanel, _coinPanel;
     protected BuyButton _buyBars, _buyCoins;
+    protected Widget _getBars;
     protected HTML _barLabel;
     protected Widget _switchToCoins;
 
