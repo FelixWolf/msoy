@@ -180,11 +180,11 @@ toybox.resource_dir = /export/msoy/pages/media
 #
 # Our Postgres database configuration
 
-db.default.server = localhost
+db.default.server = msoy-db
 db.default.port = 5432
 db.default.database = msoy
-db.default.username = USERNAME
-db.default.password = PASSWORD
+db.default.username = msoy
+db.default.password = msoy
 
 db.readonly.maxconns = 1
 db.readwrite.maxconns = 1
@@ -208,10 +208,10 @@ oooauth.access_denied_url = /register/access_denied.wm
 #
 # Messaging properties used to communicate with other systems, such as billing
 
-# messaging.server.addresses=localhost:5672
+# messaging.server.addresses=msoy-rabbitmq:5672
 # messaging.server.virtualhost=localhost
 # messaging.server.username=whirled
-# messaging.server.password=PASSWORD
+# messaging.server.password=whirledpass
 # messaging.server.realm=/data
 # messaging.server.heartbeat=0
 # messaging.server.replyTimeout=4000

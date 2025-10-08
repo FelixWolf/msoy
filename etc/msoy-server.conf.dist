@@ -13,7 +13,7 @@ SERVER_MEMORY=384M
 TOOL_MEMORY=384M
 
 # The host via which to send mail
-SMTP_HOST=localhost
+SMTP_HOST=msoy-mail
 
 # Locate the mail program
 MAIL=/usr/bin/mail
