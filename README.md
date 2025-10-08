@@ -106,6 +106,18 @@ see something like the following, then you're in good shape:
 
 You can then navigate to http://localhost:8080/ to access your local Whirled instance.
 
+## Building with docker
+A few scripts have been created to help ease building of msoy. You need docker and docker compose to use these.
+
+Assuming you have followed the previous instructions of setting up the config:
+
+1. Run `./build-prod.sh` or `./build-dev.sh`
+2. Enter the `./docker` directory
+3. Run `./build-docker.sh`
+4. Run `./run-docker.sh`
+
+You should be good to go from there. You can find the media, database, and other stuff can be found in `./docker/data/`.
+
 ## License
 
 The Whirled code is released under the BSD License. See the [LICENSE] file for details.
