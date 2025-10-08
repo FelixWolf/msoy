@@ -4,11 +4,11 @@ services:
     container_name: msoy-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: whirled
-      RABBITMQ_DEFAULT_PASS: whirledpass
+      RABBITMQ_DEFAULT_PASS: ${MESSAGING_PASSWORD}
       RABBITMQ_DEFAULT_VHOST: /
     ports:
       - "5672:5672"
-      - "15672:15672"
+#     - "15672:15672"
 
   msoy-db:
     image: postgres:17
@@ -33,8 +33,8 @@ services:
       POSTFIX_mynetworks: 127.0.0.0/8,172.16.0.0/12
       ALLOW_EMPTY_SENDER_DOMAINS: "true"
       ALLOWED_SENDER_DOMAINS: "whirled.social"
-    ports:
-      - "25:25"
+    expose:
+      - "25"
     volumes:
       - ./data/dkim:/etc/opendkim/keys
     restart: unless-stopped
@@ -44,8 +44,8 @@ services:
     container_name: msoy-whirled
     build: .
     ports:
-      - "9475:8080"
       - "843:843"
+      - "9475:8080"
       - "4010:4010"
       - "47623:47623"
       - "47624:47624"

@@ -19,6 +19,7 @@ src/java/com/threerings/msoy/data/all/DeploymentConfig.java
 build.properties
 docker/docker-staging/
 docker/data/
+docker/config.env
 log/
 flex3/
 packages/

@@ -1,2 +1,2 @@
 #!/bin/bash
-DOCKER_HOSTNAME=msoy1 docker-compose up
+docker-compose --env-file config.env up 
