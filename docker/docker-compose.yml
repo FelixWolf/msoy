@@ -29,10 +29,10 @@ services:
     image: boky/postfix
     container_name: msoy-mail
     environment:
-      HOSTNAME: mail.whirled.social
+      HOSTNAME: ${MAIL_HOST}
       POSTFIX_mynetworks: 127.0.0.0/8,172.16.0.0/12
       ALLOW_EMPTY_SENDER_DOMAINS: "true"
-      ALLOWED_SENDER_DOMAINS: "whirled.social"
+      ALLOWED_SENDER_DOMAINS: ${MAIL_DOMAIN}
     expose:
       - "25"
     volumes:
