@@ -21,4 +21,4 @@ for prefix in msoy-server msoy-server-code burl-server; do
     fi
 done
 
-DOCKER_HOSTNAME=msoy0 docker-compose build --no-cache
+docker-compose --env-file config.env build --no-cache
