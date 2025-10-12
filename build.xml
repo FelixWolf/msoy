@@ -312,6 +312,10 @@
       </filterset>
     </copy>
 
+    <!-- Copy the license file to comply with the BSD license -->
+    <copy file="LICENSE" tofile="pages/license.txt" overwrite="true">
+    </copy>
+    
     <!-- copy our HTML sanitizer configuration -->
     <copy file="${basedir}/etc/antisamy-config.xml" todir="${deploy.dir}"/>
   </target>
