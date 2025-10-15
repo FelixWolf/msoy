@@ -7,7 +7,7 @@
   <meta content="games,friends,explore,chat,shop,create,whirled" name="keywords"/>
   <meta content="Whirled" property="og:title" />
   <meta content="Play games, make friends, explore, chat, shop and create all in your own Whirled." property="og:description" />
-  <meta content="@SERVER_URL@images/logo.png" property="og:image" />
+  <meta content="@SERVER_URL@images/logo_NEW.png" property="og:image" />
   <meta content="#8dc5e9" data-react-helmet="true" name="theme-color" />
   <link rel="stylesheet" href="/themed/css/global.css?themeId=0" type="text/css"/>
   <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon"/>
