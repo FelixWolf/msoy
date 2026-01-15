@@ -65,7 +65,7 @@ public interface WebUserServiceAsync
     /**
      * The async version of {@link WebUserService#updatePrefs}.
      */
-    void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash, AsyncCallback<Void> callback);
+    void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash, boolean showMature, AsyncCallback<Void> callback);
 
     /**
      * The async version of {@link WebUserService#updatePassword}.

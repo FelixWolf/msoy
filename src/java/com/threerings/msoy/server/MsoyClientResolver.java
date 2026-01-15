@@ -423,6 +423,9 @@ public class MsoyClientResolver extends CrowdClientResolver
         // guests will get resolution later on, in MsoySession.sessionWillStart()
         _memobj.visitorInfo = new VisitorInfo(_mrec.visitorId, true);
 
+        // Load the member's preference to see mature content
+        _memobj.showMature = _mrec.isSet(MemberRecord.Flag.SHOW_MATURE);
+
         // Load up the member's experiences
         //_memobj.experiences = new DSet<MemberExperience>(
         //        _memberLogic.getExperiences(memberId));

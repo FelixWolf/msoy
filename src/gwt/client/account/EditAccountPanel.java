@@ -182,6 +182,11 @@ public class EditAccountPanel extends FlowPanel
         table.setWidget(row, 1, _announceEmail = new CheckBox(_msgs.editAnnounceEmailTip()), 2);
         _announceEmail.addStyleName("tipLabel");
         _announceEmail.setValue(_accountInfo.emailAnnouncements);
+        
+        table.setText(++row, 0, _msgs.editShowMature(), 1, "rightLabel");
+        table.setWidget(row, 1, _showMature = new CheckBox(_msgs.editShowMatureTip()), 2);
+        _showMature.addStyleName("tipLabel");
+        _showMature.setValue(_accountInfo.showMature);
 
         // Disabled until auto flash login can be fixed
         // table.setText(++row, 0, _msgs.autoFlash(), 1, "rightLabel");
@@ -397,12 +402,15 @@ public class EditAccountPanel extends FlowPanel
     protected void updatePrefs ()
     {
         _upprefs.setEnabled(false);
+        final boolean newShowMature = _showMature.getValue();
         _usersvc.updatePrefs(
-            _whirledEmail.getValue(), _announceEmail.getValue(), _accountInfo.autoFlash,
+            _whirledEmail.getValue(), _announceEmail.getValue(), newShowMature, _accountInfo.autoFlash,
             new AsyncCallback<Void>() {
                 public void onSuccess (Void result) {
                     _upprefs.setEnabled(true);
                     MsoyUI.infoNear(_msgs.prefsUpdated(), _upprefs);
+                    // notify the Flash client of the preference change so it updates immediately
+                    notifyFlashClientShowMature(newShowMature);
                 }
                 public void onFailure (Throwable cause) {
                     _upprefs.setEnabled(true);
@@ -410,6 +418,16 @@ public class EditAccountPanel extends FlowPanel
                 }
             });
     }
+
+    /**
+     * Notify the Flash client that the showMature preference has changed so it can update
+     * immediately without waiting for a distributed object update from the server.
+     */
+    protected native void notifyFlashClientShowMature (boolean showMature) /*-{
+        if ($wnd.msoy && $wnd.msoy.setShowMature) {
+            $wnd.msoy.setShowMature(showMature);
+        }
+    }-*/;
 
     protected void updateCharity (final int newCharityId)
     {
@@ -538,7 +556,7 @@ public class EditAccountPanel extends FlowPanel
     protected SmartTable _perma;
 
     protected TextBox _email, _pname, _rname;
-    protected CheckBox _whirledEmail, _announceEmail, _delconf, _autoFlash;
+    protected CheckBox _whirledEmail, _announceEmail, _showMature, _delconf, _autoFlash;
     protected PasswordTextBox _password, _confirm, _delpass;
     protected Button _upemail, _upprefs, _uppass, _uppname, _uprname, _upcharity, _revalidate;
 

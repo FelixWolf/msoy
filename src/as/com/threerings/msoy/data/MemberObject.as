@@ -26,6 +26,8 @@ import com.threerings.msoy.group.data.all.GroupMembership_Rank;
 import com.threerings.msoy.item.data.all.Avatar;
 import com.threerings.msoy.room.data.Track;
 
+import flash.external.ExternalInterface;
+import com.threerings.msoy.client.Prefs;
 /**
  * Represents a connected msoy user.
  */
@@ -183,6 +185,9 @@ public class MemberObject extends BodyObject
     /** If this player is DJ-ing, the songs they have queued up. */
     public var tracks :DSet; /* of */ Track;
 
+    /** Whether this player has opted into seeing mature content */
+    public var showMature :Boolean;
+    
     /**
      * Return this member's unique id.
      */
@@ -347,6 +352,14 @@ public class MemberObject extends BodyObject
         partyId = ins.readInt();
         experiences = DSet(ins.readObject());
         tracks = DSet(ins.readObject());
+        showMature = ins.readBoolean();
+        ExternalInterface.call("console.debug", "Wants show mature: "+showMature);
+        try {
+            // persist locally and notify listeners that the preference changed
+            Prefs.setShowMature(showMature);
+        } catch (e:Error) {
+            // ignore if Prefs unavailable for some reason
+        }
     }
 }
 }

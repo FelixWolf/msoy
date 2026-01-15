@@ -80,6 +80,7 @@ public class Prefs
         LOG_TO_CHAT, BLEEPED_MEDIA, PARTY_GROUP, USE_CUSTOM_BACKGROUND_COLOR,
         CUSTOM_BACKGROUND_COLOR, ROOM_ZOOM, IGNORED_TUTORIAL_IDS, TUTORIAL_PROGRESS_PREFIX,
         AUTOSHOW_PREFIX];
+    public static const SHOW_MATURE :String = "showMature";
 
     public static const CHAT_FONT_SIZE_MIN :int = 10;
     public static const CHAT_FONT_SIZE_MAX :int = 24;
@@ -193,6 +194,19 @@ public class Prefs
     {
         _globalBleep = bleeped;
         events.dispatchEvent(new NamedValueEvent(BLEEPED_MEDIA, GLOBAL_BLEEP, bleeped));
+    }
+
+    /** Get/Set whether the local user wants to see mature content. */
+    public static function getShowMature () :Boolean
+    {
+        return (_config.getValue(SHOW_MATURE, true) as Boolean);
+    }
+
+    public static function setShowMature (show :Boolean) :void
+    {
+        _config.setValue(SHOW_MATURE, show);
+        var event:NamedValueEvent = new NamedValueEvent(PREF_SET, SHOW_MATURE, show);
+        events.dispatchEvent(event);
     }
 
     public static function isGlobalBleep () :Boolean

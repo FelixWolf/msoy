@@ -71,6 +71,7 @@ import com.threerings.msoy.server.ExternalAuthHandler;
 import com.threerings.msoy.server.ExternalAuthLogic;
 import com.threerings.msoy.server.MemberLogic;
 import com.threerings.msoy.server.MemberManager;
+import com.threerings.msoy.server.MemberLocator;
 import com.threerings.msoy.server.MsoyAuthenticator;
 import com.threerings.msoy.server.PopularPlacesSnapshot.Place;
 import com.threerings.msoy.server.ServerConfig;
@@ -366,7 +367,7 @@ public class WebUserServlet extends MsoyServiceServlet
     }
 
     // from interface WebUserService
-    public void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash)
+    public void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash, boolean showMature)
         throws ServiceException
     {
         MemberRecord mrec = requireAuthedUser();
@@ -376,8 +377,25 @@ public class WebUserServlet extends MsoyServiceServlet
         mrec.setFlag(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL, !emailOnWhirledMail);
         mrec.setFlag(MemberRecord.Flag.NO_ANNOUNCE_EMAIL, !emailAnnouncements);
         mrec.setFlag(MemberRecord.Flag.NO_AUTO_FLASH, !autoFlash);
+        mrec.setFlag(MemberRecord.Flag.SHOW_MATURE, showMature);
         if (mrec.flags != oflags) {
             _memberRepo.storeFlags(mrec);
+                // If this member is currently online on this node, update their MemberObject
+                // on the Presents event thread so that the change is propagated to clients.
+                final boolean fshow = showMature;
+                final MemberRecord fmrec = mrec;
+                _omgr.postRunnable(new Runnable() {
+                    public void run() {
+                        try {
+                            com.threerings.msoy.data.MemberObject mobj = _locator.lookupMember(fmrec.memberId);
+                            if (mobj != null) {
+                                mobj.setShowMature(fshow);
+                            }
+                        } catch (Exception e) {
+                            log.warning("Failed to propagate showMature to MemberObject", "who", fmrec.who(), e);
+                        }
+                    }
+                });
         }
     }
 
@@ -429,6 +447,7 @@ public class WebUserServlet extends MsoyServiceServlet
         ainfo.emailWhirledMail = !mrec.isSet(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL);
         ainfo.emailAnnouncements = !mrec.isSet(MemberRecord.Flag.NO_ANNOUNCE_EMAIL);
         ainfo.autoFlash = !mrec.isSet(MemberRecord.Flag.NO_AUTO_FLASH);
+        ainfo.showMature = mrec.isSet(MemberRecord.Flag.SHOW_MATURE);
         ainfo.charityMemberId = mrec.charityMemberId;
 
         // Load charities and sort by name.
@@ -772,6 +791,7 @@ public class WebUserServlet extends MsoyServiceServlet
     @Inject protected MailSender _mailer;
     @Inject protected MemberLogic _memberLogic;
     @Inject protected MemberManager _memberMan;
+    @Inject protected MemberLocator _locator;
     @Inject protected MoneyLogic _moneyLogic;
     @Inject protected MsoyAuthenticator _author;
     @Inject protected MsoyOOOUserRepository _authrep;

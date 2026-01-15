@@ -146,6 +146,10 @@ public class MemberObject extends BodyObject
     /** The field name of the <code>tracks</code> field. */
     @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String TRACKS = "tracks";
+    
+    /** The field name of the <code>showMature</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
+    public static final String SHOW_MATURE = "showMature";
     // AUTO-GENERATED: FIELDS END
 
     /** A message sent by the server to denote a notification to be displayed.
@@ -231,6 +235,9 @@ public class MemberObject extends BodyObject
 
     /** If this player is DJ-ing, the tracks they have queued up. */
     public DSet<Track> tracks = DSet.newDSet();
+    
+    /** Whether this player has elected to view mature content */
+    public boolean showMature;
 
     public void initWithClient (MemberClientObject mcobj)
     {
@@ -1174,6 +1181,23 @@ public class MemberObject extends BodyObject
         requestAttributeChange(TRACKS, value, this.tracks);
         DSet<Track> clone = (value == null) ? null : value.clone();
         this.tracks = clone;
+    }
+    
+    /**
+     * Requests that the <code>showMature</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
+    public void setShowMature (boolean value)
+    {
+        boolean ovalue = this.showMature;
+        requestAttributeChange(
+            SHOW_MATURE, Boolean.valueOf(value), Boolean.valueOf(ovalue));
+        this.showMature = value;
     }
     // AUTO-GENERATED: METHODS END
 

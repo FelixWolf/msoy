@@ -8,13 +8,19 @@ import flash.geom.Point;
 
 import com.threerings.util.CommandEvent;
 import com.threerings.util.ValueEvent;
+import com.threerings.util.NamedValueEvent;
 
 import com.threerings.media.MediaContainer;
 
 import com.threerings.msoy.client.LoadingWatcher;
+import com.threerings.msoy.client.Prefs;
+import com.threerings.msoy.item.client.ItemService;
+import com.threerings.msoy.item.data.all.ItemIdent;
+import com.threerings.msoy.item.data.all.Item;
 import com.threerings.msoy.client.Msgs;
 import com.threerings.msoy.room.data.FurniData;
 import com.threerings.msoy.world.client.WorldContext;
+import com.threerings.msoy.ui.MsoyMediaContainer;
 
 public class FurniSprite extends EntitySprite
 {
@@ -48,6 +54,12 @@ public class FurniSprite extends EntitySprite
         _sprite.addEventListener(MouseEvent.ROLL_OVER, handleMouseHover);
         _sprite.addEventListener(MouseEvent.ROLL_OUT, handleMouseHover);
         _sprite.addEventListener(MediaContainer.LOADER_READY, handleLoaderReady);
+
+        // check whether this furni corresponds to a mature item and block if necessary
+        checkMatureAndBlock(_furni.itemType, _furni.itemId);
+
+        // listen for showMature preference changes to re-evaluate blocking
+        Prefs.events.addEventListener(Prefs.PREF_SET, handlePrefChange, false, 0, true);
     }
 
     override public function getDesc () :String
@@ -89,9 +101,87 @@ public class FurniSprite extends EntitySprite
         _furni = furni;
         setItemIdent(furni.getItemIdent());
         _sprite.setMediaDesc(furni.media);
+        checkMatureAndBlock(_furni.itemType, _furni.itemId);
         scaleUpdated();
         rotationUpdated();
         setLocation(furni.loc);
+    }
+
+    protected function handlePrefChange (event :NamedValueEvent) :void
+    {
+        if (event.name == Prefs.SHOW_MATURE) {
+            log.info("handlePrefChange: SHOW_MATURE changed", "newValue", event.value);
+            // re-evaluate blocking for this sprite
+            checkMatureAndBlock(_furni.itemType, _furni.itemId);
+        }
+    }
+
+    /** Simple in-memory cache for item mature status. key: "type:id" -> Boolean */
+    protected static var _matureCache :Object = {};
+    /** Pending callbacks while awaiting peepItem. */
+    protected static var _pending :Object = {};
+
+    protected function checkMatureAndBlock (itemType :int, itemId :int) :void
+    {
+        if (itemType == Item.NOT_A_TYPE || itemId == 0) {
+            return;
+        }
+        var key :String = itemType + ":" + itemId;
+        var applyBlock :Function = function (isMature :Boolean) :void {
+            try {
+                var wantShow :Boolean = Prefs.getShowMature();
+                log.info("applyBlock: evaluating blocking", "itemKey", key, "isMature", isMature, "wantShow", wantShow);
+                var msc :MsoyMediaContainer = (_sprite as MsoyMediaContainer);
+                if (msc == null) {
+                    log.warning("applyBlock: MsoyMediaContainer is null");
+                    return;
+                }
+                if (isMature && !wantShow) {
+                    log.info("applyBlock: setting blocked to bleep");
+                    msc.setBlocked("bleep");
+                } else {
+                    log.info("applyBlock: clearing blocked");
+                    msc.setBlocked(null);
+                }
+            } catch (e:Error) {
+                log.warning("applyBlock error", e);
+            }
+        };
+
+        if (_matureCache.hasOwnProperty(key)) {
+            applyBlock(Boolean(_matureCache[key]));
+            return;
+        }
+
+        // if a request is already pending, queue our callback
+        if (_pending.hasOwnProperty(key)) {
+            _pending[key].push(applyBlock);
+            return;
+        }
+
+        _pending[key] = [ applyBlock ];
+
+        try {
+            var svc :ItemService = _ctx.getClient().requireService(ItemService) as ItemService;
+            svc.peepItem(new ItemIdent(itemType, itemId), _ctx.resultListener(function (item:Object) :void {
+                var isMature:Boolean = false;
+                try { isMature = (item as Item).mature; } catch (e:Error) { isMature = false; }
+                _matureCache[key] = isMature;
+                var arr:Array = _pending[key] as Array;
+                delete _pending[key];
+                for each (var cb:Function in arr) {
+                    try { cb(isMature); } catch (ee:Error) {}
+                }
+            }));
+        } catch (e:Error) {
+            // unable to query; assume not mature
+            _matureCache[key] = false;
+            var arr2:Array = _pending[key] as Array;
+            delete _pending[key];
+            for each (var cb2:Function in arr2) {
+                try { cb2(false); } catch (ee:Error) {}
+            }
+        }
     }
 
     override public function getToolTipText () :String

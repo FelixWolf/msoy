@@ -17,6 +17,7 @@ import flash.utils.getTimer;
 
 import com.threerings.util.Log;
 import com.threerings.util.MessageBundle;
+import com.threerings.util.NamedValueEvent;
 import com.threerings.util.ValueEvent;
 
 import com.threerings.presents.client.ClientAdapter;
@@ -452,6 +453,7 @@ public /*abstract*/ class MsoyClient extends CrowdClient
         ExternalInterface.addCallback("setMinimized", externalSetMinimized);
         ExternalInterface.addCallback("isConnected", externalIsConnected);
         ExternalInterface.addCallback("setPage", externalSetPage);
+        ExternalInterface.addCallback("setShowMature", externalSetShowMature);
 
         try {
             if (ExternalInterface.call("helloWhirled") as Boolean) {
@@ -502,6 +504,16 @@ public /*abstract*/ class MsoyClient extends CrowdClient
     {
         _address = (pagePath == null) ? null : Address.fromToken(pagePath, token);
         dispatchEvent(new ValueEvent(GWT_PAGE_CHANGED, _address));
+    }
+
+    /**
+     * Exposed to javascript: update the showMature preference when changed in GWT.
+     * This ensures the Flash client updates immediately without waiting for a distributed
+     * object update from the server.
+     */
+    protected function externalSetShowMature (showMature :Boolean) :void
+    {
+        Prefs.setShowMature(showMature);
     }
 
     /**
