@@ -334,12 +334,12 @@ public abstract class ItemRecord extends PersistentRecord implements Streamable
         // creatorId = not user editable
         // flagged = not user editable
         // attrs = not user editable
-        // mature = not user editable
         // used = not user editable
         // location = not user editable
         // lastTouched = not user editable
         name = (item.name == null) ? "" : item.name;
         description = (item.description == null) ? "" : item.description;
+        mature = item.mature;
         MediaDesc media = item.getRawThumbnailMedia();
         if (media != null) {
             thumbMediaHash = HashMediaDesc.unmakeHash(media);

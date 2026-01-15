@@ -11,6 +11,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -106,6 +108,8 @@ public abstract class ItemEditor extends FlowPanel
         }
         public void valueChanged () {
         }
+        public void boxUpdated (boolean value) {
+        }
     }
 
     public static interface MediaUpdater
@@ -192,6 +196,7 @@ public abstract class ItemEditor extends FlowPanel
         addInfo();
         addExtras();
         addDescription();
+        addMaturity();
 
         addSpacer();
         HorizontalPanel buttons = new HorizontalPanel();
@@ -234,6 +239,9 @@ public abstract class ItemEditor extends FlowPanel
         safeSetText(_name, _item.name);
         if (_description != null && _item.description != null) {
             _description.setText(_item.description);
+        }
+        if (_mature != null) {
+            _mature.setValue(_item.mature, false);
         }
 
         // build the header now that we know type and whether we are creating or editing
@@ -317,10 +325,20 @@ public abstract class ItemEditor extends FlowPanel
     }
 
     /**
-     * Derived classes can add additional editable components to the display by overriding this
-     * method. Anything added before a call to super will go above the furniture and thumbnail
-     * image uploaders, anything added after will go after.
+     * Adds the maturity flag to the editor interface. Allows specifying whether an item
+     * is marked as containing mature content.
      */
+    protected void addMaturity ()
+    {
+        _mature = new CheckBox(_emsgs.editorMature());
+        bind(_mature, new Binder() {
+            @Override public void boxUpdated (boolean value) {
+                _item.mature = value;
+            }
+        });
+        addRow("", _mature);
+    }
+
     protected void addExtras ()
     {
         addFurniUploader();
@@ -811,6 +829,16 @@ public abstract class ItemEditor extends FlowPanel
                     }
                 }
             });
+
+        } else if (widget instanceof CheckBox) {
+            final CheckBox checkbox = (CheckBox)widget;
+            checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                public void onValueChange (ValueChangeEvent<Boolean> event) {
+                    if (_item != null) {
+                        binder.boxUpdated(event.getValue());
+                    }
+                }
+            });
         }
         return widget;
     }
@@ -901,6 +929,7 @@ public abstract class ItemEditor extends FlowPanel
 
     protected TextBox _name;
     protected LimitedTextArea _description;
+    protected CheckBox _mature;
     protected CheckBox _econfirm;
     protected Button _esubmit;
 
