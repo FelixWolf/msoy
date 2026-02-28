@@ -38,13 +38,13 @@
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>1.6.0</version>
+      <version>2.10.9.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.restfb</groupId>
       <artifactId>restfb</artifactId>
-      <version>1.6.9</version>
+      <version>2023.12.0</version>
     </dependency>
 
     <dependency>
@@ -154,13 +154,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>18.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-gwt</artifactId>
-      <version>18.0</version>
+      <version>32.1.3-jre</version>
     </dependency>
 
     <dependency>
@@ -171,8 +165,8 @@
 
     <dependency>
       <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>1.7</version>
+      <artifactId>velocity-engine-core</artifactId>
+      <version>2.3</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -181,32 +175,18 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity-tools</artifactId>
-      <version>2.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.velocity</groupId>
-          <artifactId>velocity</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+
 
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
-      <version>1.6</version>
+      <version>1.10</version>
     </dependency>
 
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
     </dependency>
 
     <dependency>
@@ -218,7 +198,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.6</version>
+      <version>2.11.0</version>
     </dependency>
 
     <dependency>
@@ -227,19 +207,19 @@
       <version>2.10.1</version>
     </dependency>
 
-    <!-- NOTE: Jetty 6.1.25 has known CVEs but upgrading requires code changes.
-         Consider migrating to Jetty 9.x or newer with proper API updates. -->
+    <!-- Upgraded from Jetty 6.1.26 which had known CVEs (CVE-2011-4461, CVE-2011-4452, CVE-2017-9735)
+         to Jetty 9.4.x for security fixes while maintaining Java 8 compatibility -->
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <version>6.1.26</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.4.53.v20231009</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.2.6</version>
+      <version>2.3.1</version>
     </dependency>
 
     <dependency>
@@ -251,19 +231,13 @@
     <dependency>
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
-      <version>1.1.3</version>
+      <version>2.0.26</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.mina</groupId>
-      <artifactId>mina-filter-ssl</artifactId>
-      <version>1.1.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.owasp</groupId>
+      <groupId>org.owasp.antisamy</groupId>
       <artifactId>antisamy</artifactId>
-      <version>1.4</version>
+      <version>1.7.5</version>
     </dependency>
 
 <!--
@@ -275,9 +249,9 @@
 -->
 
     <dependency>
-      <groupId>org.opensymphony.quartz</groupId>
+      <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
-      <version>1.6.1</version>
+      <version>2.3.2</version>
     </dependency>
 
     <dependency>
@@ -301,13 +275,13 @@
     <dependency>
       <groupId>org.apache.xmlrpc</groupId>
       <artifactId>xmlrpc-client</artifactId>
-      <version>3.1.2</version>
+      <version>3.1.3</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.xmlrpc</groupId>
       <artifactId>xmlrpc-server</artifactId>
-      <version>3.1.2</version>
+      <version>3.1.3</version>
     </dependency>
 
     <!-- not migrated
@@ -332,14 +306,14 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
-      <version>1.5.5</version>
+      <version>5.20.0</version>
     </dependency>
 
   </dependencies>
