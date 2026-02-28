@@ -391,7 +391,7 @@
     <echo>Compiling GWT classes...</echo>
     <mkdir dir="${deploy.dir}/gclasses"/>
     <javac srcdir="${gsrc.dir}" destdir="${deploy.dir}/gclasses" includeAntRuntime="false"
-           debug="on" optimize="off" source="1.6" target="1.6">
+           debug="on" optimize="off" source="1.8" target="1.8">
       <classpath>
         <path refid="gwt.classpath"/>
         <pathelement path="${classes.dir}"/>
@@ -760,7 +760,7 @@
              classpathref="classpath"/>
     <!-- make sure the record class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/*Record.java"/>
     </javac>
@@ -774,7 +774,7 @@
   <target name="gendobj" depends="toolprep">
     <!-- make sure the dobject class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/*Object.java"/>
     </javac>
@@ -791,7 +791,7 @@
   <target name="genstreamable" depends="toolprep">
     <!-- make sure the streamable class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/data/*.java"/>
     </javac>
@@ -806,7 +806,7 @@
   <target name="genservice" depends="toolprep">
     <!-- make sure the service class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/client/*Service.java"/>
       <exclude name="**/web/**"/>
@@ -838,7 +838,7 @@
   <target name="genreceiver" depends="toolprep">
     <!-- make sure the receiver class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/*Receiver.java"/>
     </javac>
@@ -865,7 +865,7 @@
   <target name="genasync" description="Regenerates GWT Async interfaces.">
     <!-- make sure the record class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="${build.optimize}" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <include name="**/gwt/*Service.java"/>
     </javac>
@@ -916,7 +916,7 @@
   <target name="qcompile">
     <echo>Compiling main classes...</echo>
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="off" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="off" deprecation="on" source="1.8" target="1.8">
       <classpath refid="classpath"/>
       <compilerarg value="-Xlint"/>
       <compilerarg value="-Xlint:-serial"/>
@@ -926,7 +926,7 @@
 
     <echo>Compiling test classes...</echo>
     <javac srcdir="${src.dir}" destdir="${tclasses.dir}" includeAntRuntime="false"
-           debug="on" optimize="off" deprecation="on" source="1.6" target="1.6">
+           debug="on" optimize="off" deprecation="on" source="1.8" target="1.8">
       <classpath refid="test.classpath"/>
       <compilerarg value="-Xlint"/>
       <compilerarg value="-Xlint:-serial"/>

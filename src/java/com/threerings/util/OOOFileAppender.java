@@ -171,7 +171,7 @@ public class OOOFileAppender extends FileAppender
     {
         // before actually logging, check whether it is time to do a rollover, if so, schedule the
         // next rollover time and then rollover
-        long n = event.getTimeStamp();
+        long n = event.timeStamp;
         if (n >= _nextCheck) {
             _now.setTime(n);
             _nextCheck = _rc.getNextCheckMillis(_now);
