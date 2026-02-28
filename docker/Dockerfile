@@ -1,6 +1,6 @@
-FROM openjdk:8-jre-slim
+FROM openjdk:8u342-jre-slim
 
-FROM openjdk:8-jdk AS builder
+FROM openjdk:8u342-jre-slim AS builder
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     postgresql-client \
