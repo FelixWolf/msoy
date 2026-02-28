@@ -1,6 +1,6 @@
 # ---- Build stage ----
 # Base build image
-FROM openjdk:8-jdk AS builder
+FROM openjdk:8u342 AS builder
 
 # Install dependencies
 RUN apt-get update && \
