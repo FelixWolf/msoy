@@ -158,7 +158,8 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>32.1.3-jre</version>
+      <!-- Keep Guava aligned with legacy GWT/presents serialization behavior. -->
+      <version>18.0</version>
     </dependency>
 
     <dependency>
@@ -169,8 +170,10 @@
 
     <dependency>
       <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity-engine-core</artifactId>
-      <version>2.3</version>
+      <artifactId>velocity</artifactId>
+      <!-- ThemedTemplateServlet uses org.apache.velocity.runtime.log.LogChute,
+           which is present in Velocity 1.x and removed in Velocity 2.x. -->
+      <version>1.7</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
