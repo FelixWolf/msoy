@@ -344,9 +344,9 @@
     <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
-      <!-- Downgrade from 5.20.0 to 5.9.0 to avoid junit-bom import that breaks maven-ant-tasks 2.1.3.
-           Version 5.9.0 is stable and compatible with the existing codebase. -->
-      <version>5.9.0</version>
+      <!-- Use RabbitMQ client 1.7.2 for API compatibility with code expecting ConnectionParameters class.
+           RabbitMQ client 2.0+ removed ConnectionParameters in favor of ConnectionFactory. -->
+      <version>1.7.2</version>
     </dependency>
 
   </dependencies>
