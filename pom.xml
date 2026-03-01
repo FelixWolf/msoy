@@ -37,14 +37,18 @@
 
     <dependency>
       <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>2.10.9.2</version>
+      <artifactId>ehcache-core</artifactId>
+      <!-- Use ehcache-core 2.5.2 which still has the Statistics class that the code expects.
+           EHCache 2.6+ removed net.sf.ehcache.Statistics in favor of new statistics API. -->
+      <version>2.5.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.restfb</groupId>
       <artifactId>restfb</artifactId>
-      <version>2023.12.0</version>
+      <!-- Use RestFB 1.6.14 for API compatibility with code expecting DefaultFacebookClient(String) constructor.
+           RestFB 2.x changed constructor to require Version parameter. -->
+      <version>1.6.14</version>
     </dependency>
 
     <dependency>
@@ -186,7 +190,16 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.5</version>
+      <!-- 1.5 introduces a junit-bom import that maven-ant-tasks 2.1.3 cannot reliably resolve
+           in some production environments; 1.4 avoids that resolver incompatibility. -->
+      <version>1.4</version>
+    </dependency>
+
+    <!-- The codebase uses old Apache Commons HttpClient 3.x API (org.apache.commons.httpclient). -->
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
     </dependency>
 
     <dependency>
@@ -198,7 +211,15 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
+      <!-- 2.11.0 introduces a junit-bom import that maven-ant-tasks 2.1.3 cannot reliably resolve
+           in some production environments; 2.6 predates that resolver incompatibility. -->
+      <version>2.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.8.1</version>
     </dependency>
 
     <dependency>
@@ -207,12 +228,13 @@
       <version>2.10.1</version>
     </dependency>
 
-    <!-- Upgraded from Jetty 6.1.26 which had known CVEs (CVE-2011-4461, CVE-2011-4452, CVE-2017-9735)
-         to Jetty 9.4.x for security fixes while maintaining Java 8 compatibility -->
+    <!-- Use Jetty 6.1.26 for compatibility with existing code that expects org.mortbay.jetty packages.
+         Note: This version has known CVEs but the codebase is written for Jetty 6.x API.
+         Upgrading to Jetty 9+ would require significant refactoring of HTTP server code. -->
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>9.4.53.v20231009</version>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>6.1.26</version>
       <optional>true</optional>
     </dependency>
 
@@ -231,13 +253,17 @@
     <dependency>
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
-      <version>2.0.26</version>
+      <!-- Use MINA 1.1.7 for compatibility with org.apache.mina.common imports in existing code.
+           MINA 2.x changed package structure to org.apache.mina.core. -->
+      <version>1.1.7</version>
     </dependency>
 
     <dependency>
       <groupId>org.owasp.antisamy</groupId>
       <artifactId>antisamy</artifactId>
-      <version>1.7.5</version>
+      <!-- Downgrade from 1.7.5 to 1.6.0 to avoid transitive dependencies that declare junit-bom,
+           which breaks maven-ant-tasks 2.1.3. Version 1.6.0 is stable and widely deployed. -->
+      <version>1.6.0</version>
     </dependency>
 
 <!--
@@ -251,7 +277,9 @@
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
-      <version>2.3.2</version>
+      <!-- Use Quartz 1.8.6 for API compatibility with code expecting concrete JobDetail/CronTrigger classes.
+           Quartz 2.x made these abstract and changed the JobFactory API significantly. -->
+      <version>1.8.6</version>
     </dependency>
 
     <dependency>
@@ -313,7 +341,9 @@
     <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
-      <version>5.20.0</version>
+      <!-- Downgrade from 5.20.0 to 5.9.0 to avoid junit-bom import that breaks maven-ant-tasks 2.1.3.
+           Version 5.9.0 is stable and compatible with the existing codebase. -->
+      <version>5.9.0</version>
     </dependency>
 
   </dependencies>

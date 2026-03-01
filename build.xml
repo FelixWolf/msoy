@@ -119,7 +119,11 @@
   <target name="mavendeps" depends="prepare">
     <!-- these libraries we need for building and for the server runtime -->
     <artifact:pom id="msoypom" file="pom.xml" />
-    <artifact:dependencies filesetId="runtime.fileset" pomRefId="msoypom" />
+    <artifact:dependencies filesetId="runtime.fileset" pomRefId="msoypom">
+      <!-- maven-ant-tasks defaults to an old HTTP central URL; force HTTPS for modern metadata -->
+      <remoteRepository id="central" url="https://repo1.maven.org/maven2"/>
+      <remoteRepository id="apache.snapshots" url="https://repository.apache.org/snapshots"/>
+    </artifact:dependencies>
     <copy todir="${deploy.dir}/lib">
       <fileset refid="runtime.fileset"/>
       <mapper type="flatten"/>
@@ -127,6 +131,9 @@
 
     <!-- these libraries we only need to build -->
     <artifact:dependencies filesetId="build.fileset">
+      <remoteRepository id="central" url="https://repo1.maven.org/maven2"/>
+      <remoteRepository id="apache.snapshots" url="https://repository.apache.org/snapshots"/>
+
       <dependency groupId="com.google.gwt" artifactId="gwt-user" version="${gwt.version}"/>
 <!--
       <dependency groupId="com.google.gwt" artifactId="gwt-incubator" version="2.0.1"/>
