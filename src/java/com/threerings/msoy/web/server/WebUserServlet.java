@@ -372,6 +372,15 @@ public class WebUserServlet extends MsoyServiceServlet
     {
         MemberRecord mrec = requireAuthedUser();
 
+        // showMature may only be enabled for members whose birthday indicates they're an adult;
+        // enforce this server-side so it can't be bypassed by tampering with the client
+        if (showMature) {
+            ProfileRecord prec = _profileRepo.loadProfile(mrec.memberId);
+            if (prec == null || !ProfileRecord.isAdult(prec.birthday)) {
+                showMature = false;
+            }
+        }
+
         // update their mail preferences if appropriate
         int oflags = mrec.flags;
         mrec.setFlag(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL, !emailOnWhirledMail);
@@ -447,7 +456,8 @@ public class WebUserServlet extends MsoyServiceServlet
         ainfo.emailWhirledMail = !mrec.isSet(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL);
         ainfo.emailAnnouncements = !mrec.isSet(MemberRecord.Flag.NO_ANNOUNCE_EMAIL);
         ainfo.autoFlash = !mrec.isSet(MemberRecord.Flag.NO_AUTO_FLASH);
-        ainfo.showMature = mrec.isSet(MemberRecord.Flag.SHOW_MATURE);
+        ainfo.canShowMature = (prec != null) && ProfileRecord.isAdult(prec.birthday);
+        ainfo.showMature = ainfo.canShowMature && mrec.isSet(MemberRecord.Flag.SHOW_MATURE);
         ainfo.charityMemberId = mrec.charityMemberId;
 
         // Load charities and sort by name.

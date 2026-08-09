@@ -190,7 +190,7 @@ public class ActorSprite extends OccupantSprite
         var key:String = ident.type + ":" + ident.itemId;
         var applyBlock:Function = function (isMature:Boolean) :void {
             try {
-                var wantShow:Boolean = (_ctx.getMemberObject() != null) ? _ctx.getMemberObject().showMature : Prefs.getShowMature();
+                var wantShow:Boolean = Prefs.getShowMature();
                 var msc:MsoyMediaContainer = (_sprite as MsoyMediaContainer);
                 if (msc == null) return;
                 if (isMature && !wantShow) {

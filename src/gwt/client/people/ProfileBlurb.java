@@ -56,6 +56,7 @@ import client.ui.DateFields;
 import client.ui.MsoyUI;
 import client.ui.RowPanel;
 import client.ui.ThumbBox;
+import client.util.FlashClients;
 import client.util.InfoCallback;
 import client.util.Link;
 import client.util.MediaUtil;
@@ -444,8 +445,32 @@ public class ProfileBlurb extends Blurb
                         !name.equals(CShell.creds.name.toString())) {
                         CShell.frame.dispatchEvent(new NameChangeEvent(name));
                     }
+                    // if this changed our own birthday such that we're now a minor, the server
+                    // will have force-disabled showMature; tell the Flash client immediately so
+                    // it stops showing mature content without requiring a reload
+                    if (_name.getId() == CShell.getMemberId() && _profile.birthday != null &&
+                        !isAdult(_profile.birthday)) {
+                        FlashClients.setShowMature(false);
+                    }
                 }
             });
+    }
+
+    /**
+     * Returns true if the supplied (year, month, day) birthday indicates an age of 18 or older.
+     */
+    protected static boolean isAdult (int[] birthdayYMD)
+    {
+        Date birthday = DateUtil.toDate(birthdayYMD);
+        Date today = new Date();
+        DateUtil.zeroTime(today);
+        int todayYear = DateUtil.getYear(today);
+        int age = todayYear - DateUtil.getYear(birthday);
+        Date birthdayThisYear = DateUtil.toDate(new int[] { todayYear, birthdayYMD[1], birthdayYMD[2] });
+        if (birthdayThisYear.after(today)) {
+            age--;
+        }
+        return age >= 18;
     }
 
     protected void addFriendButton ()

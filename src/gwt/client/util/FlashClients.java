@@ -248,6 +248,15 @@ public class FlashClients
     }
 
     /**
+     * Tells the actionscript client that the user's showMature preference has changed, so it can
+     * update immediately without waiting for a reload.
+     */
+    public static void setShowMature (boolean showMature)
+    {
+        setShowMatureNative(findClient(), showMature);
+    }
+
+    /**
      * Returns the element that represents the Flash client.
      */
     public static native Element findClient () /*-{
@@ -359,6 +368,16 @@ public class FlashClients
         if (client) {
             // exceptions from JavaScript break GWT; don't let that happen
             try { client.startTour(); } catch (e) {}
+        }
+    }-*/;
+
+    /**
+     * Does the actual <code>setShowMature()</code> call.
+     */
+    protected static native void setShowMatureNative (Element client, boolean showMature) /*-{
+        if (client) {
+            // exceptions from JavaScript break GWT; don't let that happen
+            try { client.setShowMature(showMature); } catch (e) {}
         }
     }-*/;
 

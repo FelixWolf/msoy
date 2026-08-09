@@ -276,6 +276,18 @@ public class ProfileRecord extends PersistentRecord
     static { registerKeyFields(MEMBER_ID); }
     // AUTO-GENERATED: METHODS END
 
+    /** The minimum age (in years) required to be permitted to view mature content. */
+    public static final int MATURE_CONTENT_AGE = 18;
+
+    /**
+     * Returns true if the supplied birthday indicates an age of {@link #MATURE_CONTENT_AGE} or
+     * older. A missing birthday is treated as not adult.
+     */
+    public static boolean isAdult (Date birthday)
+    {
+        return birthday != null && toAge(birthday) >= MATURE_CONTENT_AGE;
+    }
+
     /**
      * Converts a date into years.
      */

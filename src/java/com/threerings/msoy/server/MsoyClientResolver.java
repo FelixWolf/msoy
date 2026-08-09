@@ -423,8 +423,10 @@ public class MsoyClientResolver extends CrowdClientResolver
         // guests will get resolution later on, in MsoySession.sessionWillStart()
         _memobj.visitorInfo = new VisitorInfo(_mrec.visitorId, true);
 
-        // Load the member's preference to see mature content
-        _memobj.showMature = _mrec.isSet(MemberRecord.Flag.SHOW_MATURE);
+        // Load the member's preference to see mature content; only adults (per their profile
+        // birthday) are permitted to see mature content, regardless of the persisted flag
+        _memobj.showMature = _mrec.isSet(MemberRecord.Flag.SHOW_MATURE) &&
+            precord != null && ProfileRecord.isAdult(precord.birthday);
 
         // Load up the member's experiences
         //_memobj.experiences = new DSet<MemberExperience>(

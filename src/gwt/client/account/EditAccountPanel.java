@@ -47,6 +47,7 @@ import client.ui.PromptPopup;
 import client.ui.TongueBox;
 import client.util.BillingUtil;
 import client.util.ClickCallback;
+import client.util.FlashClients;
 import client.util.InfoCallback;
 import client.util.Link;
 import client.util.MediaUtil;
@@ -186,7 +187,11 @@ public class EditAccountPanel extends FlowPanel
         table.setText(++row, 0, _msgs.editShowMature(), 1, "rightLabel");
         table.setWidget(row, 1, _showMature = new CheckBox(_msgs.editShowMatureTip()), 2);
         _showMature.addStyleName("tipLabel");
-        _showMature.setValue(_accountInfo.showMature);
+        _showMature.setValue(_accountInfo.canShowMature && _accountInfo.showMature);
+        _showMature.setEnabled(_accountInfo.canShowMature);
+        if (!_accountInfo.canShowMature) {
+            _showMature.setTitle(_msgs.editShowMatureAgeTip());
+        }
 
         // Disabled until auto flash login can be fixed
         // table.setText(++row, 0, _msgs.autoFlash(), 1, "rightLabel");
@@ -404,13 +409,13 @@ public class EditAccountPanel extends FlowPanel
         _upprefs.setEnabled(false);
         final boolean newShowMature = _showMature.getValue();
         _usersvc.updatePrefs(
-            _whirledEmail.getValue(), _announceEmail.getValue(), newShowMature, _accountInfo.autoFlash,
+            _whirledEmail.getValue(), _announceEmail.getValue(), _accountInfo.autoFlash, newShowMature,
             new AsyncCallback<Void>() {
                 public void onSuccess (Void result) {
                     _upprefs.setEnabled(true);
                     MsoyUI.infoNear(_msgs.prefsUpdated(), _upprefs);
                     // notify the Flash client of the preference change so it updates immediately
-                    notifyFlashClientShowMature(newShowMature);
+                    FlashClients.setShowMature(newShowMature);
                 }
                 public void onFailure (Throwable cause) {
                     _upprefs.setEnabled(true);
@@ -418,16 +423,6 @@ public class EditAccountPanel extends FlowPanel
                 }
             });
     }
-
-    /**
-     * Notify the Flash client that the showMature preference has changed so it can update
-     * immediately without waiting for a distributed object update from the server.
-     */
-    protected native void notifyFlashClientShowMature (boolean showMature) /*-{
-        if ($wnd.msoy && $wnd.msoy.setShowMature) {
-            $wnd.msoy.setShowMature(showMature);
-        }
-    }-*/;
 
     protected void updateCharity (final int newCharityId)
     {

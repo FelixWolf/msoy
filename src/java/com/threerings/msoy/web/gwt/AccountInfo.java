@@ -44,7 +44,11 @@ public class AccountInfo implements IsSerializable
 
     /** Whether or not to show mature content. */
     public boolean showMature;
-    
+
+    /** Whether this account is old enough (per its birthday) to be allowed to enable
+     * {@link #showMature}. */
+    public boolean canShowMature;
+
     /** Whether to automatically go to your room when you visit Whirled. */
     public boolean autoFlash;
 

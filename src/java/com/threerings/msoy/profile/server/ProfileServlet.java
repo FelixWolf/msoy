@@ -285,7 +285,18 @@ public class ProfileServlet extends MsoyServiceServlet
         final boolean greeterChanged = (tgtrec.isGreeter() != greeter);
         if (greeterChanged) {
             tgtrec.setFlag(MemberRecord.Flag.GREETER, greeter);
+        }
+        // if their new birthday makes them a minor, force off showMature so it can't remain
+        // enabled for an account that's no longer old enough for it
+        final boolean showMatureRevoked = nrec.birthday != null &&
+            !ProfileRecord.isAdult(nrec.birthday) && tgtrec.isSet(MemberRecord.Flag.SHOW_MATURE);
+        if (showMatureRevoked) {
+            tgtrec.setFlag(MemberRecord.Flag.SHOW_MATURE, false);
+        }
+        if (greeterChanged || showMatureRevoked) {
             _memberRepo.storeFlags(tgtrec);
+        }
+        if (greeterChanged) {
             // let the world servers know about the info change
             MemberNodeActions.tokensChanged(memberId, tgtrec.toTokenRing());
         }
