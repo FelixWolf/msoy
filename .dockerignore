@@ -3,3 +3,26 @@
 log/
 packages/
 docker/
+
+# Build outputs (mirrors .gitignore, minus etc/{test,prod}/*.properties|*.conf
+# — those are gitignored local config inputs, not generated outputs, and the
+# build actually needs them). Excluded so stale host build state (e.g.
+# dist/msoy-config.xml with host-absolute paths from a local build) doesn't
+# get baked into the image and shadow the in-container build.
+dist
+pages/clients/
+pages/crossdomain.xml
+pages/gwt/
+pages/index.html
+pages/js/facebook.js
+pages/license.txt
+pages/media/????????????????????????????????????????.???
+pages/media/MediaStub.swf
+pages/media/crossdomain.xml
+src/as/com/threerings/msoy/applets/*.cache
+src/as/com/threerings/msoy/client/*.cache
+src/as/com/threerings/msoy/client/DeploymentConfig.as
+src/gwt/client/*/*Messages.java
+src/java/com/threerings/msoy/data/all/DeploymentConfig.java
+build.properties
+flex3/

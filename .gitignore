@@ -9,8 +9,10 @@ pages/crossdomain.xml
 pages/gwt/
 pages/index.html
 pages/js/facebook.js
+pages/license.txt
 pages/media/????????????????????????????????????????.???
 pages/media/MediaStub.swf
+pages/media/crossdomain.xml
 src/as/com/threerings/msoy/applets/*.cache
 src/as/com/threerings/msoy/client/*.cache
 src/as/com/threerings/msoy/client/DeploymentConfig.as
@@ -23,3 +25,4 @@ docker/config.env
 log/
 flex3/
 packages/
+.toolchain/
