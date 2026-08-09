@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # ---- Build stage ----
 # Base build image
 FROM openjdk:8u342 AS builder
@@ -43,13 +45,26 @@ ARG DEPLOYMENT=prod
 ARG DEV_DEPLOYMENT=false
 
 # Build the project
-RUN ant distcleanall && \
+#
+# dist/classes, dist/test-classes and pages/gwt are cache-mounted so javac's
+# and GWT's own incremental compilation carries over between `docker build`
+# runs instead of starting from an empty directory every time. The prod
+# path still does a full distcleanall first, since release builds should be
+# reproducible from a clean tree; the dev/test path skips it so incremental
+# compilation actually has something to build on. Both paths call `package`
+# (not `distall`) so dist/packages/*.dpkg always gets produced for the final
+# COPY below -- the dev/test build just has the test deployment config (e.g.
+# msoy.localhost) baked in instead of prod's.
+RUN --mount=type=cache,id=msoy-dist-classes,target=/msoy/dist/classes,sharing=locked \
+    --mount=type=cache,id=msoy-dist-test-classes,target=/msoy/dist/test-classes,sharing=locked \
+    --mount=type=cache,id=msoy-pages-gwt,target=/msoy/pages/gwt,sharing=locked \
     if [ "$DEPLOYMENT" = "prod" ]; then \
+        ant distcleanall && \
         ant -Dflexsdk.dir=/msoy/flex3 -Dmaven.repo.remote=https://repo1.maven.org/maven2 \
             -Ddeployment=prod -Dmsoy.user=msoy -Dburl.user=msoy -Dmsoy.group=msoy package; \
     else \
         ant -Dflexsdk.dir=/msoy/flex3 -Dmaven.repo.remote=https://repo1.maven.org/maven2 \
-            -Ddeployment=test -Ddev_deployment=$DEV_DEPLOYMENT -Dmsoy.user=msoy -Dburl.user=msoy -Dmsoy.group=msoy distall; \
+            -Ddeployment=test -Ddev_deployment=$DEV_DEPLOYMENT -Dmsoy.user=msoy -Dburl.user=msoy -Dmsoy.group=msoy package; \
     fi
 
 
