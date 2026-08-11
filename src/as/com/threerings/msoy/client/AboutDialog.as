@@ -28,6 +28,7 @@ public class AboutDialog extends FloatingPanel
         super.createChildren();
 
         var textArea :Text = FlexUtil.createText(null, 300);
+        textArea.selectable = true;
         textArea.htmlText = Msgs.GENERAL.get("m.about", DeploymentConfig.buildTime,
             Capabilities.version + (Capabilities.isDebugger ? " (debug)" : ""));
         addChild(textArea);
