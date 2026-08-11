@@ -52,6 +52,7 @@ services:
       - "47625:47625"
     volumes:
       - ./data/msoy-media:/export/msoy/pages/media/
+      - ./data/msoy-log:/export/msoy/log/
     depends_on:
       - msoy-rabbitmq
       - msoy-db

@@ -1,5 +1,6 @@
 #!/bin/bash
 chown msoy:msoy /export/msoy/pages/media
+chown msoy:msoy /export/msoy/log
 
 # Start all services
 echo "Starting msoy-policy..."
