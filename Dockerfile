@@ -44,26 +44,8 @@ RUN wget -O/msoy/lib/gwt-asyncgen.jar https://repo1.maven.org/maven2/com/samskiv
 ARG DEPLOYMENT=prod
 ARG DEV_DEPLOYMENT=false
 
-# distcleanall wholesale-deletes dist/ (distclean's <delete dir="${deploy.dir}"/>)
-# and pages/gwt (gclean's <delete dir="${gwtout.dir}"/>). Cache mounts below
-# are only attached to the actual build RUN, so this has to run first, in an
-# unmounted layer -- deleting a directory that's an active cache-mount
-# mountpoint (or the parent of one) fails with "Unable to delete directory".
-RUN if [ "$DEPLOYMENT" = "prod" ]; then ant distcleanall; fi
-
-# dist/classes and dist/test-classes are cache-mounted so javac's incremental
-# compilation carries over between `docker build` runs instead of starting
-# from an empty directory every time (the prod path above still gets a fully
-# clean tree first, since release builds should be reproducible). Both paths
-# call `package` (not `distall`) so dist/packages/*.dpkg always gets produced
-# for the final COPY below -- the dev/test build just has the test deployment
-# config (e.g. msoy.localhost) baked in instead of prod's.
-#
-# pages/gwt is deliberately NOT cache-mounted -- GWT compilation isn't the
-# slow part anyway (a few seconds), and mounting it would reintroduce the
-# same "can't rmdir an active mountpoint" problem on the next prod build.
-RUN --mount=type=cache,id=msoy-dist-classes,target=/msoy/dist/classes,sharing=locked \
-    --mount=type=cache,id=msoy-dist-test-classes,target=/msoy/dist/test-classes,sharing=locked \
+# Build msoy
+RUN ant distcleanall && \
     if [ "$DEPLOYMENT" = "prod" ]; then \
         ant -Dflexsdk.dir=/msoy/flex3 -Dmaven.repo.remote=https://repo1.maven.org/maven2 \
             -Ddeployment=prod -Dmsoy.user=msoy -Dburl.user=msoy -Dmsoy.group=msoy package; \
