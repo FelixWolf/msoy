@@ -84,7 +84,8 @@ public class EditAccountPanel extends FlowPanel
         // add our myriad account configuration sections
         add(new TongueBox(null, makePermanameSection()));
         add(new TongueBox(_msgs.editEmailHeader(), makeChangeEmailSection()));
-        add(new TongueBox(_msgs.editPrefsHeader(), makePrefsSection()));
+        add(new TongueBox(_msgs.editMailPrefsHeader(), makeMailPrefsSection()));
+        add(new TongueBox(_msgs.editMatureHeader(), makeMatureContentSection()));
         add(new TongueBox(_msgs.editRealNameHeader(), makeRealNameSection()));
         add(new TongueBox(_msgs.editPasswordHeader(), makeChangePasswordSection()));
         add(new TongueBox(_msgs.fbconnectHeader(), makeFacebookConnectSection()));
@@ -169,7 +170,7 @@ public class EditAccountPanel extends FlowPanel
         return table;
     }
 
-    protected Widget makePrefsSection ()
+    protected Widget makeMailPrefsSection ()
     {
         SmartTable table = new SmartTable(0, 10);
         int row = 0;
@@ -183,7 +184,28 @@ public class EditAccountPanel extends FlowPanel
         table.setWidget(row, 1, _announceEmail = new CheckBox(_msgs.editAnnounceEmailTip()), 2);
         _announceEmail.addStyleName("tipLabel");
         _announceEmail.setValue(_accountInfo.emailAnnouncements);
-        
+
+        // Disabled until auto flash login can be fixed
+        // table.setText(++row, 0, _msgs.autoFlash(), 1, "rightLabel");
+        // table.setWidget(++row, 1, _autoFlash = new CheckBox(_msgs.autoFlashTip()), 2);
+        // _autoFlash.addStyleName("tipLabel");
+        // _autoFlash.setValue(_accountInfo.autoFlash);
+
+        _upmailprefs = new Button(_cmsgs.update(), new ClickHandler() {
+            public void onClick (ClickEvent event) {
+                updateMailPrefs();
+            }
+        });
+        table.setWidget(++row, 1, _upmailprefs);
+        return table;
+    }
+
+    protected Widget makeMatureContentSection ()
+    {
+        SmartTable table = new SmartTable(0, 10);
+        int row = 0;
+        table.setHTML(row, 0, _msgs.editMatureExplain(), 2, "Tip");
+
         table.setText(++row, 0, _msgs.editShowMature(), 1, "rightLabel");
         table.setWidget(row, 1, _showMature = new CheckBox(_msgs.editShowMatureTip()), 2);
         _showMature.addStyleName("tipLabel");
@@ -193,18 +215,12 @@ public class EditAccountPanel extends FlowPanel
             _showMature.setTitle(_msgs.editShowMatureAgeTip());
         }
 
-        // Disabled until auto flash login can be fixed
-        // table.setText(++row, 0, _msgs.autoFlash(), 1, "rightLabel");
-        // table.setWidget(++row, 1, _autoFlash = new CheckBox(_msgs.autoFlashTip()), 2);
-        // _autoFlash.addStyleName("tipLabel");
-        // _autoFlash.setValue(_accountInfo.autoFlash);
-
-        _upprefs = new Button(_cmsgs.update(), new ClickHandler() {
+        _upmature = new Button(_cmsgs.update(), new ClickHandler() {
             public void onClick (ClickEvent event) {
-                updatePrefs();
+                updateShowMature();
             }
         });
-        table.setWidget(++row, 1, _upprefs);
+        table.setWidget(++row, 1, _upmature);
         return table;
     }
 
@@ -404,24 +420,39 @@ public class EditAccountPanel extends FlowPanel
         });
     }
 
-    protected void updatePrefs ()
+    protected void updateMailPrefs ()
     {
-        _upprefs.setEnabled(false);
-        final boolean newShowMature = _showMature.getValue();
-        _usersvc.updatePrefs(
-            _whirledEmail.getValue(), _announceEmail.getValue(), _accountInfo.autoFlash, newShowMature,
+        _upmailprefs.setEnabled(false);
+        _usersvc.updateMailPrefs(
+            _whirledEmail.getValue(), _announceEmail.getValue(), _accountInfo.autoFlash,
             new AsyncCallback<Void>() {
                 public void onSuccess (Void result) {
-                    _upprefs.setEnabled(true);
-                    MsoyUI.infoNear(_msgs.prefsUpdated(), _upprefs);
-                    // notify the Flash client of the preference change so it updates immediately
-                    FlashClients.setShowMature(newShowMature);
+                    _upmailprefs.setEnabled(true);
+                    MsoyUI.infoNear(_msgs.prefsUpdated(), _upmailprefs);
                 }
                 public void onFailure (Throwable cause) {
-                    _upprefs.setEnabled(true);
-                    MsoyUI.errorNear(CShell.serverError(cause), _upprefs);
+                    _upmailprefs.setEnabled(true);
+                    MsoyUI.errorNear(CShell.serverError(cause), _upmailprefs);
                 }
             });
+    }
+
+    protected void updateShowMature ()
+    {
+        _upmature.setEnabled(false);
+        final boolean newShowMature = _showMature.getValue();
+        _usersvc.updateShowMature(newShowMature, new AsyncCallback<Void>() {
+            public void onSuccess (Void result) {
+                _upmature.setEnabled(true);
+                MsoyUI.infoNear(_msgs.prefsUpdated(), _upmature);
+                // notify the Flash client of the preference change so it updates immediately
+                FlashClients.setShowMature(newShowMature);
+            }
+            public void onFailure (Throwable cause) {
+                _upmature.setEnabled(true);
+                MsoyUI.errorNear(CShell.serverError(cause), _upmature);
+            }
+        });
     }
 
     protected void updateCharity (final int newCharityId)
@@ -553,7 +584,8 @@ public class EditAccountPanel extends FlowPanel
     protected TextBox _email, _pname, _rname;
     protected CheckBox _whirledEmail, _announceEmail, _showMature, _delconf, _autoFlash;
     protected PasswordTextBox _password, _confirm, _delpass;
-    protected Button _upemail, _upprefs, _uppass, _uppname, _uprname, _upcharity, _revalidate;
+    protected Button _upemail, _upmailprefs, _upmature, _uppass, _uppname, _uprname, _upcharity,
+        _revalidate;
 
     protected FBConnect _fbconnect = new FBConnect();
 
