@@ -124,9 +124,15 @@ public interface WebUserService extends RemoteService
         throws ServiceException;
 
     /**
-     * Updates the preferences for this account.
+     * Updates the mail preferences for this account.
      */
-    void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash, boolean showMature)
+    void updateMailPrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash)
+        throws ServiceException;
+
+    /**
+     * Updates whether this account is permitted to see mature content.
+     */
+    void updateShowMature (boolean showMature)
         throws ServiceException;
 
     /**

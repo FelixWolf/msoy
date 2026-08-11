@@ -96,6 +96,8 @@ import com.threerings.msoy.web.gwt.ServiceCodes;
 import com.threerings.msoy.web.gwt.SessionData;
 import com.threerings.msoy.web.gwt.WebCreds;
 import com.threerings.msoy.web.gwt.WebUserService;
+import com.threerings.msoy.web.gwt.WebUserService.AppResult;
+import com.threerings.msoy.web.gwt.WebUserService.RegisterData;
 
 import static com.threerings.msoy.Log.log;
 
@@ -367,7 +369,23 @@ public class WebUserServlet extends MsoyServiceServlet
     }
 
     // from interface WebUserService
-    public void updatePrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash, boolean showMature)
+    public void updateMailPrefs (boolean emailOnWhirledMail, boolean emailAnnouncements, boolean autoFlash)
+        throws ServiceException
+    {
+        MemberRecord mrec = requireAuthedUser();
+
+        // update their mail preferences if appropriate
+        int oflags = mrec.flags;
+        mrec.setFlag(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL, !emailOnWhirledMail);
+        mrec.setFlag(MemberRecord.Flag.NO_ANNOUNCE_EMAIL, !emailAnnouncements);
+        mrec.setFlag(MemberRecord.Flag.NO_AUTO_FLASH, !autoFlash);
+        if (mrec.flags != oflags) {
+            _memberRepo.storeFlags(mrec);
+        }
+    }
+
+    // from interface WebUserService
+    public void updateShowMature (boolean showMature)
         throws ServiceException
     {
         MemberRecord mrec = requireAuthedUser();
@@ -381,30 +399,26 @@ public class WebUserServlet extends MsoyServiceServlet
             }
         }
 
-        // update their mail preferences if appropriate
-        int oflags = mrec.flags;
-        mrec.setFlag(MemberRecord.Flag.NO_WHIRLED_MAIL_TO_EMAIL, !emailOnWhirledMail);
-        mrec.setFlag(MemberRecord.Flag.NO_ANNOUNCE_EMAIL, !emailAnnouncements);
-        mrec.setFlag(MemberRecord.Flag.NO_AUTO_FLASH, !autoFlash);
-        mrec.setFlag(MemberRecord.Flag.SHOW_MATURE, showMature);
-        if (mrec.flags != oflags) {
+        if (mrec.isSet(MemberRecord.Flag.SHOW_MATURE) != showMature) {
+            mrec.setFlag(MemberRecord.Flag.SHOW_MATURE, showMature);
             _memberRepo.storeFlags(mrec);
-                // If this member is currently online on this node, update their MemberObject
-                // on the Presents event thread so that the change is propagated to clients.
-                final boolean fshow = showMature;
-                final MemberRecord fmrec = mrec;
-                _omgr.postRunnable(new Runnable() {
-                    public void run() {
-                        try {
-                            com.threerings.msoy.data.MemberObject mobj = _locator.lookupMember(fmrec.memberId);
-                            if (mobj != null) {
-                                mobj.setShowMature(fshow);
-                            }
-                        } catch (Exception e) {
-                            log.warning("Failed to propagate showMature to MemberObject", "who", fmrec.who(), e);
+
+            // If this member is currently online on this node, update their MemberObject on the
+            // Presents event thread so that the change is propagated to clients.
+            final boolean fshow = showMature;
+            final MemberRecord fmrec = mrec;
+            _omgr.postRunnable(new Runnable() {
+                public void run() {
+                    try {
+                        com.threerings.msoy.data.MemberObject mobj = _locator.lookupMember(fmrec.memberId);
+                        if (mobj != null) {
+                            mobj.setShowMature(fshow);
                         }
+                    } catch (Exception e) {
+                        log.warning("Failed to propagate showMature to MemberObject", "who", fmrec.who(), e);
                     }
-                });
+                }
+            });
         }
     }
 
