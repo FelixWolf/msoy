@@ -262,6 +262,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.java-websocket</groupId>
+      <artifactId>Java-WebSocket</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.owasp.antisamy</groupId>
       <artifactId>antisamy</artifactId>
       <!-- Downgrade from 1.7.5 to 1.6.0 to avoid transitive dependencies that declare junit-bom,

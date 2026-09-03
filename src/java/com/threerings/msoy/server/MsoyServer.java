@@ -5,6 +5,7 @@ package com.threerings.msoy.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Set;
 
 import com.google.common.base.Predicate;
@@ -171,6 +172,13 @@ public class MsoyServer extends MsoyBaseServer
                 if (_policyServer != null) {
                     _policyServer.unbindAll();
                 }
+                if (_wsProxy != null) {
+                    try {
+                        _wsProxy.stop(1000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
                 try {
                     _messageConn.close();
                 } catch (IOException ioe) {
@@ -220,6 +228,11 @@ public class MsoyServer extends MsoyBaseServer
 
         // start up our HTTP server
         _httpServer.start();
+
+        // start up our WebSocket proxy (used by clients, like Ruffle, that can't open a raw TCP
+        // socket); unlike the policy server below, this runs in all deployments
+        _wsProxy = new MsoyWebSocketProxy(new InetSocketAddress(ServerConfig.wsProxyPort));
+        _wsProxy.start();
 
         // if we're a dev deployment and our policy port is not privileged, run the policy server
         // right in the msoy server to simplify life for developers
@@ -354,6 +367,10 @@ public class MsoyServer extends MsoyBaseServer
 
     /** A policy server used on dev deployments. */
     protected IoAcceptor _policyServer;
+
+    /** Proxies WebSocket connections through to our raw game ports, for clients (like Ruffle)
+     * that can't open a raw TCP socket. */
+    protected MsoyWebSocketProxy _wsProxy;
 
     /** On dev deployments, we keep track of the ports on other nodes (hosted on the same machine
      * that need to be accepted by the policy server. */

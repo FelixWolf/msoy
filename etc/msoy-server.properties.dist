@@ -25,6 +25,12 @@ server_host = test.whirled.com
 socket_policy_port = 47623
 
 #
+# The port on which the server listens for WebSocket connections that get proxied to our raw
+# game ports, for clients (e.g. Ruffle) that can't open a raw TCP socket.
+
+ws_proxy_port = 47626
+
+#
 # The port on which the server listens for client and HTTP connections.
 
 server_ports = 47624

@@ -27,6 +27,7 @@ import client.shell.CShell;
 import client.shell.ShellMessages;
 import client.ui.MsoyUI;
 import client.util.FlashClients;
+import client.util.RuffleSupport;
 
 /**
  * Contains utility methods for item related user interface business.
@@ -71,6 +72,12 @@ public class ItemUtil
     public static HTML createViewer (
         Item item, boolean inShop, boolean userOwnsItem, String memories)
     {
+        // ensure Ruffle is loaded locally, in this document: checkFlashVersion() below may
+        // bridge its call up to a containing frame (see Frame.Calls.CHECK_FLASH_VERSION), which
+        // would load Ruffle into the wrong document to polyfill the embed we're about to create
+        // here
+        RuffleSupport.ensureRuffle();
+
         int w = 360;
         int h = 385;
 

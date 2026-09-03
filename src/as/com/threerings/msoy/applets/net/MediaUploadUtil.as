@@ -29,7 +29,12 @@ public class MediaUploadUtil
         servlet :String, authToken :String,
         mediaIds :String = null, filename :String = null, media :ByteArray = null) :URLRequest
     {
-        const BOUNDARY :String = "ooo-UmDoodleGotSomeData-ooo";
+        // NOTE: must stay all-lowercase: Ruffle's FileReference.upload()/URLRequest emulation
+        // lowercases the boundary parameter's value when it builds the outgoing Content-Type
+        // header, but not when it writes the "--boundary" delimiters into the multipart body
+        // itself -- a mixed-case boundary here causes the two to mismatch and the server to fail
+        // to find any parts in the request. Native Flash Player never had this discrepancy.
+        const BOUNDARY :String = "ooo-umdoodlegotsomedata-ooo";
         var request :URLRequest = new URLRequest(DeploymentConfig.serverURL + servlet);
         request.contentType = "multipart/form-data; boundary=" + BOUNDARY;
         request.method = URLRequestMethod.POST;

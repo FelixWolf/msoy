@@ -33,6 +33,7 @@ public class FlashClients
      */
     public static HTML createUploader (String mediaIds, String filetypes)
     {
+        RuffleSupport.ensureRuffle();
         FlashObject obj = new FlashObject("uploader",
             clientPath("uploader.swf"), 200, 40,
             "auth=" + URL.encodeComponent(CShell.getAuthToken()) +
@@ -48,6 +49,7 @@ public class FlashClients
      */
     public static HTML createCameraButton (String mediaIds)
     {
+        RuffleSupport.ensureRuffle();
         FlashObject obj = new FlashObject(
             "camerabutton", clientPath("camerabutton.swf"), 160, 19,
             "mediaIds=" + URL.encodeComponent(mediaIds));
@@ -63,6 +65,7 @@ public class FlashClients
      */
     public static HTML createVideoPlayer (int width, int height, String path)
     {
+        RuffleSupport.ensureRuffle();
         return WidgetUtil.createContainer(
             new FlashObject("videoPlayer", clientPath("videoplayer.swf"), width, height,
             (path == null) ? null : "video=" + URL.encodeComponent(path)));
@@ -73,6 +76,7 @@ public class FlashClients
      */
     public static HTML createAudioPlayer (int width, int height, String path)
     {
+        RuffleSupport.ensureRuffle();
         FlashObject player = new FlashObject("audioPlayer", clientPath("audioplayer.swf"),
             width, height, "audio=" + URL.encodeComponent(path));
         player.bgcolor = "#FFFFFF";
@@ -91,6 +95,7 @@ public class FlashClients
         int width, int height, String mediaIds, boolean takeSnapshot, String currentURL,
         int maxWidth, int maxHeight, boolean maxRequired)
     {
+        RuffleSupport.ensureRuffle();
         String flashVars = "auth=" + URL.encodeComponent(CShell.getAuthToken()) +
             "&mediaIds=" + URL.encodeComponent(mediaIds);
         if (takeSnapshot) {
@@ -113,6 +118,7 @@ public class FlashClients
      */
     public static void embedWhirledMap (Panel container, String flashvars)
     {
+        RuffleSupport.ensureRuffle();
         FlashObject obj = new FlashObject(
             "map", clientPath("whirledmap.swf"), "100%", "100%", flashvars);
         obj.transparent = true;
@@ -128,6 +134,8 @@ public class FlashClients
      */
     public static void embedWorldClient (Panel container, String flashVars)
     {
+        ensureRuffleForWorldClient(flashVars);
+
         if (!shouldShowFlash(container, 0, 0)) {
             return;
         }
@@ -145,6 +153,7 @@ public class FlashClients
      */
     public static void embedFeaturedPlaceView (Panel container, String flashVars)
     {
+        RuffleSupport.ensureRuffle();
         if (shouldShowFlash(container, FEATURED_PLACE_WIDTH, FEATURED_PLACE_HEIGHT)) {
             WidgetUtil.embedFlashObject(
                 container, WidgetUtil.createDefinition(new FlashObject(
@@ -159,6 +168,8 @@ public class FlashClients
      */
     public static void embedDecorViewer (HTML html)
     {
+        RuffleSupport.ensureRuffle();
+
         // see if we need to emit a warning instead
         String definition = CShell.frame.checkFlashVersion(600, 400);
         if (definition != null) {
@@ -176,6 +187,7 @@ public class FlashClients
      */
     public static String createSoloGameDefinition (String media)
     {
+        RuffleSupport.ensureRuffle();
         String definition = CShell.frame.checkFlashVersion(800, 600);
         return definition != null ? definition :
             WidgetUtil.createDefinition(new FlashObject("game", media, 800, 600, null));
@@ -285,6 +297,44 @@ public class FlashClients
 
         return null;
     }-*/;
+
+    /**
+     * Registers the world client's connection host/port with {@link RuffleSupport}, so that if
+     * we end up falling back to Ruffle, its emulated socket for that host/port gets tunneled
+     * through our server-side WebSocket proxy.
+     */
+    protected static void ensureRuffleForWorldClient (String flashVars)
+    {
+        String host = extractFlashVar(flashVars, "host");
+        String port = extractFlashVar(flashVars, "port");
+        if (host == null || port == null) {
+            RuffleSupport.ensureRuffle();
+            return;
+        }
+        try {
+            RuffleSupport.ensureRuffle(host, Integer.parseInt(port));
+        } catch (NumberFormatException e) {
+            RuffleSupport.ensureRuffle();
+        }
+    }
+
+    /**
+     * Extracts the value of the given key from a "key1=val1&key2=val2" flashVars string, or null
+     * if it's not present.
+     */
+    protected static String extractFlashVar (String flashVars, String key)
+    {
+        if (flashVars == null) {
+            return null;
+        }
+        for (String pair : flashVars.split("&")) {
+            int eq = pair.indexOf('=');
+            if (eq > 0 && pair.substring(0, eq).equals(key)) {
+                return pair.substring(eq + 1);
+            }
+        }
+        return null;
+    }
 
     /**
      * Checks if we have a specilized flash object to show, and if so, adds it to the container

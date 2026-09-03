@@ -28,6 +28,7 @@ import client.item.ItemUtil;
 import client.shell.CShell;
 import client.ui.MsoyUI;
 import client.util.InfoCallback;
+import client.util.RuffleSupport;
 
 public class ItemRemixer extends FlexTable
 {
@@ -66,6 +67,7 @@ public class ItemRemixer extends FlexTable
 
     protected Widget createRemixControls (Item item)
     {
+        RuffleSupport.ensureRuffle();
         MediaDesc main = item.getPrimaryMedia();
 
         String flashVars = "media=" + URL.encodeComponent(main.getMediaPath()) +

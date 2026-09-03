@@ -54,6 +54,7 @@ public class MediaUtil extends SharedMediaUtil
         Widget view;
 
         if (desc.isSWF()) {
+            RuffleSupport.ensureRuffle();
             view = WidgetUtil.createFlashContainer("", path, width, height, null);
 
         } else if (desc.isVideo()) {

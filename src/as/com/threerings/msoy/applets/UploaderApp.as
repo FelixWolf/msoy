@@ -4,7 +4,6 @@
 package com.threerings.msoy.applets {
 
 import flash.display.Sprite;
-import flash.events.DataEvent;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
@@ -15,6 +14,7 @@ import flash.events.SecurityErrorEvent;
 import flash.external.ExternalInterface;
 import flash.net.FileFilter;
 import flash.net.FileReference;
+import flash.net.URLLoader;
 import flash.system.Security;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
@@ -54,8 +54,12 @@ public class UploaderApp extends Sprite
 //        _fileRef.addEventListener(HTTPStatusEvent.HTTP_STATUS, dispatchEvent);
 //        _fileRef.addEventListener(Event.OPEN, dispatchEvent);
         _fileRef.addEventListener(ProgressEvent.PROGRESS, handleProgress);
-        _fileRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, handleUploadCompleteData);
-        _fileRef.addEventListener(Event.COMPLETE, handleUploadComplete);
+        // NOTE: we deliberately don't use FileReference.upload() here -- it's an unimplemented
+        // stub in Ruffle (it silently does nothing, no request is ever sent). Instead we read
+        // the file into memory ourselves (FileReference.load(), which Ruffle does implement) and
+        // POST it manually, the same approach MediaUploader.as already uses successfully for the
+        // remixer and image editor uploads.
+        _fileRef.addEventListener(Event.COMPLETE, handleFileLoaded);
 
         Security.loadPolicyFile(DeploymentConfig.crossDomainURL);
 
@@ -133,10 +137,19 @@ public class UploaderApp extends Sprite
     {
         setStatus("");
         displayProgress(0);
-        _fileRef.upload(MediaUploadUtil.createRequest("uploadsvc", String(_params["auth"])),
-            String(_params["mediaIds"]));
+        _fileRef.load();
 
         showButton("Cancel upload", handleCancelUpload);
+    }
+
+    protected function handleFileLoaded (event :Event) :void
+    {
+        _loader = new URLLoader();
+        _loader.addEventListener(Event.COMPLETE, handleUploadComplete);
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, handleUploadError);
+        _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUploadError);
+        _loader.load(MediaUploadUtil.createRequest("uploadsvc", String(_params["auth"]),
+            String(_params["mediaIds"]), _fileRef.name, _fileRef.data));
     }
 
     protected function handleUploadError (event :ErrorEvent) :void
@@ -155,20 +168,17 @@ public class UploaderApp extends Sprite
         displayProgress(event.bytesLoaded / event.bytesTotal);
     }
 
-    protected function handleUploadCompleteData (event :DataEvent) :void
+    protected function handleUploadComplete (event :Event) :void
     {
         if (ExternalInterface.available) {
-            var result :Object = MediaUploadUtil.parseResult(event.data);
+            var result :Object = MediaUploadUtil.parseResult(String(_loader.data));
             for (var mediaId :String in result) {
                 var data :Object = result[mediaId];
                 ExternalInterface.call("setHash", mediaId, _fileRef.name, data.hash, data.mimeType,
                     data.constraint, /*data.expiration, data.signature,*/ data.width, data.height);
             }
         }
-    }
 
-    protected function handleUploadComplete (event :Event) :void
-    {
         showUploadButton();
         setStatus("Upload complete");
     }
@@ -179,6 +189,14 @@ public class UploaderApp extends Sprite
             _fileRef.cancel();
         } catch (e :Error) {
             // ignore
+        }
+        if (_loader != null) {
+            try {
+                _loader.close();
+            } catch (e :Error) {
+                // ignore
+            }
+            _loader = null;
         }
     }
 
@@ -194,6 +212,8 @@ public class UploaderApp extends Sprite
     protected var _params :Object;
 
     protected var _fileRef :FileReference;
+
+    protected var _loader :URLLoader;
 
     protected var _button :SimpleSkinButton;
 

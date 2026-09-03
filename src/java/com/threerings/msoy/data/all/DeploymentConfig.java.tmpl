@@ -23,6 +23,10 @@ public class DeploymentConfig
     /** The hostname of the server. */
     public static final String serverHost = "@server_host@";
 
+    /** The port on which the WebSocket proxy listens (used by clients, like Ruffle, that can't
+     * open a raw TCP socket to reach our game servers). */
+    public static final int wsProxyPort = @ws_proxy_port@;
+
     /** The URL via which we should load our media. */
     public static final String mediaURL = "@media_url@";
 

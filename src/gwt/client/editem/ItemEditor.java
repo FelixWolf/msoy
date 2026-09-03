@@ -53,6 +53,7 @@ import client.ui.MsoyUI;
 import client.ui.PromptPopup;
 import client.ui.StyledTabPanel;
 import client.util.InfoCallback;
+import client.util.RuffleSupport;
 import client.util.TextBoxUtil;
 
 /**
@@ -877,6 +878,7 @@ public abstract class ItemEditor extends FlowPanel
             flashVars += "&username=Tester";
         }
 
+        RuffleSupport.ensureRuffle();
         _remixPopup = new BorderedPopup(false, true);
         _remixPopup.setWidget(WidgetUtil.createFlashContainer("remixControls",
             "/clients/" + DeploymentConfig.version + "/remixer.swf",

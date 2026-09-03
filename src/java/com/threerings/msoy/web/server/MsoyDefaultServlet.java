@@ -52,6 +52,13 @@ public class MsoyDefaultServlet extends DefaultServlet
         // add the privacy header so we can set some cookies in an iframe
         MsoyHttpServer.addPrivacyHeader(rsp);
 
+        // media and client assets are fetched cross-origin by Ruffle (via standard browser
+        // fetch/XHR, which enforces CORS) even though native Flash Player's crossdomain.xml
+        // mechanism already allowed this; let any origin load them
+        if (uri.startsWith("/media/") || uri.startsWith("/clients/")) {
+            rsp.addHeader("Access-Control-Allow-Origin", "*");
+        }
+
         if ("/index.html".equals(uri)) {
             doPreMainPageGet(req, rsp);
         }

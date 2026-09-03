@@ -24,6 +24,7 @@ import client.shell.LogonPanel;
 import client.ui.MsoyUI;
 import client.ui.RegisterPanel;
 import client.util.Link;
+import client.util.RuffleSupport;
 
 /**
  * Our main landing page.
@@ -43,6 +44,7 @@ public class LandingPanel extends SmartTable
         video.setWidget(MsoyUI.createActionImage("/images/landing/play_screen.png",
                                                  _msgs.landingClickToStart(), new ClickHandler() {
             public void onClick (ClickEvent event) {
+                RuffleSupport.ensureRuffle();
                 video.setWidget(WidgetUtil.createFlashContainer(
                     "preview", "/images/landing/landing_movie.swf", 208, 154, null));
             }

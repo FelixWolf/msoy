@@ -19,6 +19,7 @@ import com.threerings.msoy.web.gwt.Pages;
 import client.shell.CShell;
 import client.ui.MsoyUI;
 import client.util.PageCallback;
+import client.util.RuffleSupport;
 
 /**
  * Play a mochi game.
@@ -39,6 +40,7 @@ public class MochiGamePanel extends FlowPanel
     protected void init (MochiGameInfo info)
     {
         clear();
+        RuffleSupport.ensureRuffle();
         Widget game = WidgetUtil.createFlashContainer(
             info.tag, info.swfURL, info.width, info.height, null);
         game.addStyleName("Game");

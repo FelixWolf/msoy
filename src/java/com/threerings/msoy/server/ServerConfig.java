@@ -122,6 +122,10 @@ public class ServerConfig
     /** The port on which we listen to socket policy requests. */
     public static int socketPolicyPort;
 
+    /** The port on which we listen for WebSocket connections that get proxied to our raw game
+     * ports, for clients (e.g. Ruffle) that can't open a raw TCP socket. */
+    public static int wsProxyPort;
+
     /** The ReCaptcha public key. */
     public static String recaptchaPublicKey;
 
@@ -294,6 +298,7 @@ public class ServerConfig
         httpPort = config.getValue("http_port", 8080);
         gameServerPort = config.getValue("game_server_port", 47625);
         socketPolicyPort = config.getValue("socket_policy_port", 47623);
+        wsProxyPort = config.getValue("ws_proxy_port", 47626);
 
         String hostname = System.getProperty("hostname");
         // we tell other local machines to connect to us using our back channel hostname
@@ -364,6 +369,7 @@ public class ServerConfig
                     }
                     httpPort = httpPort + offset + nodeId;
                     gameServerPort = gameServerPort + offset + nodeId;
+                    wsProxyPort = wsProxyPort + offset + nodeId;
                 } catch (Exception e) {
                     errors.add("Invalid 'node_port_offset' supplied: " + nodePortOffset);
                 }
